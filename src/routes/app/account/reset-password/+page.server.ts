@@ -37,13 +37,13 @@ export const actions = {
 		});
 
 		if (!user) {
-			error(401, 'User not authenticated');
+			error(401, 'Usuário autenticado não encontrado');
 		}
 
 		const passwordMatches = await verifyPassword(form.data.currentPassword, user.password);
 
 		if (!passwordMatches) {
-			setError(form, 'currentPassword', 'Incorrect password');
+			setError(form, 'currentPassword', 'Senha incorreta');
 
 			return fail(400, { form });
 		}
@@ -63,7 +63,7 @@ export const actions = {
 			{
 				kind: 'success',
 				asToast: true,
-				message: 'Password updated successfully'
+				message: 'Senha atualizada com sucesso'
 			},
 			e
 		);

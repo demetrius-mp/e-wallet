@@ -35,11 +35,11 @@ export const handle = sequence(handleUser, handleTheme);
 export const handleError = function ({ status }) {
 	if (status === 404) {
 		return {
-			message: 'Page not found'
+			message: 'Página não encontrada'
 		};
 	} else if (status === 500) {
 		return {
-			message: 'An unexpected error occurred'
+			message: 'Ocorreu um erro inesperado'
 		};
 	}
 } satisfies HandleServerError;

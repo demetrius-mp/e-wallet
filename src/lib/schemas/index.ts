@@ -11,13 +11,13 @@ export const signUpSchema = z
 		if (data.password !== data.confirmPassword) {
 			ctx.addIssue({
 				code: 'custom',
-				message: 'Password and confirmation must be equal',
+				message: 'Senha e confirmação devem ser iguais',
 				path: ['confirmPassword']
 			});
 
 			ctx.addIssue({
 				code: 'custom',
-				message: 'Password and confirmation must be equal',
+				message: 'Senha e confirmação devem ser iguais',
 				path: ['password']
 			});
 		}
@@ -44,13 +44,13 @@ export const resetPasswordSchema = z
 		if (data.newPassword !== data.confirmNewPassword) {
 			ctx.addIssue({
 				code: 'custom',
-				message: 'New password and confirmation must be equal',
+				message: 'Nova senha e confirmação devem ser iguais',
 				path: ['newPassword']
 			});
 
 			ctx.addIssue({
 				code: 'custom',
-				message: 'New password and confirmation must be equal',
+				message: 'Nova senha e confirmação devem ser iguais',
 				path: ['confirmNewPassword']
 			});
 		}

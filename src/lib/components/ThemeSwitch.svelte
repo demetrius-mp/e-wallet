@@ -45,13 +45,11 @@
 			$theme = documentTheme;
 		}
 	});
+
+	$: ariaLabel = $theme === 'light' ? 'Alterar para tema escuro' : 'Alterar para tema claro';
 </script>
 
-<button
-	on:click={toggleTheme}
-	aria-label="Toggle color theme"
-	class="btn btn-circle btn-ghost text-2xl"
->
+<button on:click={toggleTheme} aria-label={ariaLabel} class="btn btn-circle btn-ghost text-2xl">
 	{#if $theme === 'light'}
 		<IconWeatherNight />
 	{:else if $theme === 'dark'}

@@ -26,12 +26,12 @@
 </script>
 
 <svelte:head>
-	<title>e-Wallet | Transactions</title>
+	<title>e-Wallet | Transações</title>
 </svelte:head>
 
 <div>
 	<div class="flex items-baseline gap-2">
-		<h2 class="text-2xl">Invoice</h2>
+		<h2 class="text-2xl">Fatura</h2>
 		<small> ({selectedDate}) </small>
 	</div>
 
@@ -42,9 +42,9 @@
 
 <div class="flex items-center justify-between gap-2">
 	<div>
-		<h2 class="text-2xl">Falling due</h2>
+		<h2 class="text-2xl">À vencer</h2>
 		<span class="text-sm">
-			at {selectedDate}
+			no mês {selectedDate}
 		</span>
 	</div>
 
@@ -63,7 +63,7 @@
 			}
 		}}
 	>
-		<button use:melt={trigger} class="btn btn-circle btn-neutral">
+		<button use:melt={trigger} aria-label="Abrir calendário" class="btn btn-circle btn-neutral">
 			<IconCalendarMonth class="text-xl" />
 		</button>
 
@@ -75,15 +75,15 @@
 
 				<div class="max-w-xs rounded-box bg-base-200 p-4 pt-2">
 					<div class="flex items-center justify-between gap-2">
-						<span class="text-lg font-bold"> Filter by month </span>
+						<span class="text-lg font-bold"> Filtrar por mês </span>
 
-						<button use:melt={close} aria-label="Close calendar" class="btn btn-circle btn-sm">
+						<button use:melt={close} aria-label="Fechar calendário" class="btn btn-circle btn-sm">
 							<IconClose class="text-xl" />
 						</button>
 					</div>
 
 					<span>
-						Selected month: {selectedDate}
+						Mês selecionado: {selectedDate}
 					</span>
 
 					<div class="divider my-0 mb-2"></div>
@@ -123,7 +123,7 @@
 			name="query"
 			bind:value={searchTransactionsQuery}
 			class="input join-item input-bordered w-full"
-			placeholder="Search transacctions"
+			placeholder="Buscar transações"
 		/>
 		<button type="submit" class="btn join-item">
 			<IconMagnify class="text-xl" />
@@ -146,7 +146,7 @@
 
 			<div class="flex justify-between">
 				<span class="text-sm">
-					{date.utc(transaction.date).format('DD/MM/YYYY')}
+					{date.utc(transaction.date).format('DD/MM/YY')}
 				</span>
 
 				<span class="text-nowrap text-sm">
@@ -198,7 +198,7 @@
 			class="btn btn-circle btn-primary"
 			href="/app/transactions/new"
 			use:melt={trigger}
-			aria-label="Create transaction"
+			aria-label="Criar transação"
 		>
 			<IconPlus class="text-2xl" />
 		</a>
@@ -211,7 +211,7 @@
 			>
 				<div use:melt={arrow} />
 
-				<p class="px-1">Create transaction</p>
+				<p class="px-1">Criar transação</p>
 			</div>
 		{/if}
 	</Tooltip>

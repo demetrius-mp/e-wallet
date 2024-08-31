@@ -83,7 +83,7 @@
 							type="submit"
 						>
 							<IconAccountEdit class="text-xl" />
-							Edit account
+							Atualizar conta
 						</a>
 						<ButtonForm
 							action="/sign-out"
@@ -96,7 +96,7 @@
 								type="submit"
 							>
 								<IconLogout class="text-xl" />
-								Sign out
+								Sair
 							</button>
 						</ButtonForm>
 					</div>

@@ -67,7 +67,7 @@ export const actions = {
 		setFlash(
 			{
 				kind: 'success',
-				message: 'Signed in successfully',
+				message: 'Conectado com sucesso',
 				asToast: true
 			},
 			e

@@ -2,6 +2,7 @@ import { signUpSchema } from '$lib/schemas';
 import { generatePasswordHash } from '$lib/server/auth/password';
 import { db } from '$lib/server/db';
 import { redirectTo } from '$lib/server/redirectTo';
+import { setFlash } from 'sveltekit-flash-message/server';
 import { fail, setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
@@ -55,6 +56,15 @@ export const actions = {
 				password: hashedPassword
 			}
 		});
+
+		setFlash(
+			{
+				kind: 'success',
+				message: 'Conta criada com sucesso',
+				asToast: true
+			},
+			e
+		);
 
 		redirectTo(e, 302, '/sign-in');
 	}

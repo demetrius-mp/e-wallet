@@ -15,7 +15,7 @@ export const actions = {
 		setFlash(
 			{
 				kind: 'success',
-				message: 'Signed out successfully',
+				message: 'Desconectado com sucesso',
 				asToast: true
 			},
 			e

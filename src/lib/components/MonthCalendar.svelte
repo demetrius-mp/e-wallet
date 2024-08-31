@@ -1,17 +1,17 @@
 <script lang="ts" context="module">
 	const months = [
-		'January',
-		'February',
-		'March',
-		'April',
-		'May',
-		'June',
-		'July',
-		'August',
-		'September',
-		'October',
-		'November',
-		'December'
+		'Janeiro',
+		'Fevereiro',
+		'Março',
+		'Abril',
+		'Maio',
+		'Junho',
+		'Julho',
+		'Agosto',
+		'Setembro',
+		'Outubro',
+		'Novembro',
+		'Dezembro'
 	];
 </script>
 
@@ -79,10 +79,9 @@
 			disabled={displayedYear === minYear}
 			on:click={() => (displayedYear -= 1)}
 			class="btn btn-neutral btn-sm"
-			aria-label="Decrease year"
+			aria-label="Diminuir ano"
 		>
 			<IconChevronLeft />
-			<span class="sr-only"> Decrease year </span>
 		</button>
 
 		<span class="text-2xl"> {displayedYear} </span>
@@ -91,10 +90,9 @@
 			disabled={displayedYear === maxYear}
 			on:click={() => (displayedYear += 1)}
 			class="btn btn-neutral btn-sm"
-			aria-label="Increase year"
+			aria-label="Aumentar ano"
 		>
 			<IconChevronRight />
-			<span class="sr-only"> Increase year </span>
 		</button>
 	</div>
 
@@ -107,7 +105,7 @@
 			{#key displayedMonth}
 				<button
 					on:click={() => setSelectedDate(displayedYear, month)}
-					aria-label={`Select ${monthName}`}
+					aria-label={`Selectionar mês ${monthName}`}
 					disabled={isDisabled}
 					class={classes(
 						'btn uppercase hover:btn-primary',

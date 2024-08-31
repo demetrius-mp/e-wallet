@@ -74,7 +74,7 @@
 	{#if show}
 		{formattedValue}
 	{:else}
-		<span class="sr-only">Information hidden</span>
+		<span class="sr-only"> Informação escondida </span>
 	{/if}
 </span>
 

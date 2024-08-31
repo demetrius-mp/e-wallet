@@ -1,12 +1,6 @@
 <script lang="ts" context="module">
-	function capitalize(str: string) {
-		return str.charAt(0).toUpperCase() + str.slice(1);
-	}
-
-	export type ToastKind = 'error' | 'success' | 'info' | 'warning';
-
 	type ToastData = {
-		kind: ToastKind;
+		kind: App.FlashMessageKind;
 		description: string;
 	};
 
@@ -19,18 +13,25 @@
 
 	export { addToast, removeToast };
 
-	const textColor: Record<ToastKind, string> = {
+	const textColor: Record<App.FlashMessageKind, string> = {
 		error: 'text-error',
 		success: 'text-success',
 		info: 'text-info',
 		warning: 'text-warning'
 	};
 
-	const toastIcon: Record<ToastKind, ComponentType> = {
+	const toastIcon: Record<App.FlashMessageKind, ComponentType> = {
 		error: IconAlertOutline,
 		success: IconCheckCircleOutline,
 		info: IconInformationOutline,
 		warning: IconAlertOutline
+	};
+
+	const kindTranslation: Record<App.FlashMessageKind, string> = {
+		error: 'Erro',
+		success: 'Sucesso',
+		info: 'Informação',
+		warning: 'Aviso'
 	};
 </script>
 
@@ -67,7 +68,7 @@
 						class="h-6 w-6 text-2xl {textColor[data.kind]}"
 					/>
 					<h3 use:melt={$title(id)} class="font-bold">
-						{capitalize(data.kind)}
+						{kindTranslation[data.kind]}
 					</h3>
 				</div>
 

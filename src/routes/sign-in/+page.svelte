@@ -11,13 +11,13 @@
 </script>
 
 <svelte:head>
-	<title>e-Wallet - Sign in</title>
+	<title>e-Wallet - Entrar</title>
 </svelte:head>
 
 <div>
-	<h1 class="text-2xl">Sign in</h1>
+	<h1 class="text-2xl">Entrar</h1>
 	<p>
-		Want to sign up? <a href="/sign-up" class="link">Click here</a>.
+		Quer criar sua conta? <a href="/sign-up" class="link">Clique aqui</a>.
 	</p>
 </div>
 
@@ -45,7 +45,7 @@
 	/>
 
 	<PasswordField
-		label="Password"
+		label="Senha"
 		bind:value={$form.password}
 		name="password"
 		errors={$errors.password}
@@ -55,6 +55,6 @@
 	/>
 
 	<div class="flex justify-end">
-		<SubmitButton submitting={$submitting} class="btn btn-primary">Sign in</SubmitButton>
+		<SubmitButton submitting={$submitting} class="btn btn-primary">Entrar</SubmitButton>
 	</div>
 </form>

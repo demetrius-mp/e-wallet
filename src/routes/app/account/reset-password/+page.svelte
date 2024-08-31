@@ -10,13 +10,13 @@
 </script>
 
 <svelte:head>
-	<title>e-Wallet - Reset password</title>
+	<title>e-Wallet - Redefinir senha</title>
 </svelte:head>
 
 <div>
-	<h1 class="text-2xl">Reset password</h1>
+	<h1 class="text-2xl">Redefinir senha</h1>
 	<p>
-		Want to edit your account? <a href="/app/account/edit" class="link">Click here</a>.
+		Quer atualizar sua conta? <a href="/app/account/edit" class="link">Clique aqui</a>.
 	</p>
 </div>
 
@@ -32,7 +32,7 @@
 
 <form method="post" use:enhance class="flex flex-col gap-4">
 	<PasswordField
-		label="Current password"
+		label="Senha atual"
 		bind:value={$form.currentPassword}
 		name="currentPassword"
 		errors={$errors.currentPassword}
@@ -41,7 +41,7 @@
 	/>
 
 	<PasswordField
-		label="New password"
+		label="Nova senha"
 		bind:value={$form.newPassword}
 		name="newPassword"
 		errors={$errors.newPassword}
@@ -50,7 +50,7 @@
 	/>
 
 	<PasswordField
-		label="Confirm new password"
+		label="Confirmar nova senha"
 		bind:value={$form.confirmNewPassword}
 		name="confirmNewPassword"
 		errors={$errors.confirmNewPassword}
@@ -58,6 +58,6 @@
 	/>
 
 	<div class="flex justify-end">
-		<SubmitButton submitting={$submitting} class="btn btn-primary">Reset password</SubmitButton>
+		<SubmitButton submitting={$submitting} class="btn btn-primary">Redefinir senha</SubmitButton>
 	</div>
 </form>

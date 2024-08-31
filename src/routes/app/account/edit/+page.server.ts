@@ -48,7 +48,7 @@ export const actions = {
 		});
 
 		if (anotherUserWithEmail !== null) {
-			setError(form, 'email', 'Email is already in use');
+			setError(form, 'email', 'Email já cadastrado');
 
 			return fail(400, { form });
 		}
@@ -63,13 +63,13 @@ export const actions = {
 		});
 
 		if (!currentUserData) {
-			error(401, 'User is not authenticated');
+			error(401, 'Usuário autenticado não encontrado');
 		}
 
 		const passwordMatches = await verifyPassword(form.data.password, currentUserData.password);
 
 		if (!passwordMatches) {
-			setError(form, 'password', 'Incorrect password');
+			setError(form, 'password', 'Senha incorreta');
 
 			return fail(400, { form });
 		}
@@ -88,7 +88,7 @@ export const actions = {
 			{
 				kind: 'success',
 				asToast: true,
-				message: 'Account updated successfully'
+				message: 'Conta atualizada com sucesso'
 			},
 			e
 		);
