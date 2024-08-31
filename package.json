@@ -44,6 +44,7 @@
 	"dependencies": {
 		"@prisma/client": "^5.19.0",
 		"bcryptjs": "^2.4.3",
+		"dayjs": "^1.11.13",
 		"jsonwebtoken": "^9.0.2",
 		"sveltekit-flash-message": "^2.4.4",
 		"sveltekit-superforms": "^2.17.0",
