@@ -4,9 +4,18 @@ import 'unplugin-icons/types/svelte';
 // for information about these interfaces
 declare global {
 	namespace App {
+		type FlashMessageKind = 'error' | 'success' | 'info' | 'warning';
 		// interface Error {}
-		// interface Locals {}
-		// interface PageData {}
+		interface Locals {
+			currentUser?: Omit<import('@prisma/client').User, 'password' | 'archived'>;
+		}
+		interface PageData {
+			flash?: {
+				kind: FlashMessageKind;
+				message: string;
+				asToast?: boolean;
+			};
+		}
 		// interface PageState {}
 		// interface Platform {}
 	}
