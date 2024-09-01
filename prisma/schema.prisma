@@ -21,7 +21,27 @@ model User {
   name     String @map("name")
   password String @map("password")
 
+  transactions Transaction[]
+
   archived Boolean @default(false) @map("archived")
 
   @@map("users")
+}
+
+model Transaction {
+  id Int @id @default(autoincrement()) @map("id")
+
+  name         String    @map("name")
+  value        Float     @map("value")
+  date         DateTime  @map("date") @db.Date
+  endsAt       DateTime? @map("ends_at") @db.Date
+  installments Int?      @map("installments")
+  tags         String[]  @map("tags")
+
+  userId Int  @map("user_id")
+  user   User @relation(fields: [userId], references: [id])
+
+  archived Boolean @default(false) @map("archived")
+
+  @@map("transactions")
 }

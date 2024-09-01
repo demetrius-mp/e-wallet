@@ -1,3 +1,4 @@
+import { date } from '$lib/utils/date';
 import { z } from 'zod';
 
 export const signUpSchema = z
@@ -55,3 +56,86 @@ export const resetPasswordSchema = z
 			});
 		}
 	});
+
+export const transactionSchema = z.object({
+	name: z.string().min(1),
+	value: z.number().min(0.01).step(0.01),
+	date: z
+		.string()
+		.length(8)
+		.refine(
+			(value) => {
+				return date(value, 'DD/MM/YY', true).isValid();
+			},
+			{
+				message: 'Data inválida'
+			}
+		),
+	tags: z
+		.string()
+		.optional()
+		.refine(
+			(value) => {
+				if (value === undefined) return true;
+
+				const numberOfTags = (value.match(/,/g) || []).length + 1;
+				if (numberOfTags > 5) return false;
+
+				return true;
+			},
+			{
+				message: 'Máximo de 5 tags'
+			}
+		),
+	installments: z.number().nullish(),
+	endsAt: z.string().refine(
+		(value) => {
+			return value === 'Recorrente' || date(value, 'MM/YY', true).isValid();
+		},
+		{
+			message: 'Data inválida. Deve ser no formato MM/YY ou "Recorrente"'
+		}
+	)
+});
+
+function transformTags(tags?: string): string[] | undefined {
+	if (!tags) return undefined;
+
+	return tags
+		.trim()
+		.split(',')
+		.map((tag) => tag.trim());
+}
+
+function transformEndsAt(endsAt: string): Date | null {
+	if (endsAt === 'Recorrente') return null;
+
+	const parsed = date(endsAt, 'MM/YY', true);
+
+	if (!parsed.isValid()) {
+		throw new Error('Invalid date');
+	}
+
+	return parsed.utc(true).toDate();
+}
+
+function transformDate(d: string): Date {
+	const parsed = date(d, 'DD/MM/YY', true);
+
+	if (!parsed.isValid()) {
+		throw new Error('Invalid date');
+	}
+
+	return parsed.utc(true).toDate();
+}
+
+export function transformTransactionFormData(data: z.output<typeof transactionSchema>) {
+	return {
+		name: data.name,
+		value: data.value,
+		tags: transformTags(data.tags),
+		date: transformDate(data.date),
+		endsAt: transformEndsAt(data.endsAt),
+		installments: data.installments
+	};
+}

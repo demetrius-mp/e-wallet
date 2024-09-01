@@ -18,11 +18,12 @@
 	let selectedDate = date().utc(true).add(1, 'month').format('MM/YYYY');
 	let highlightedDate = selectedDate;
 
-	let filteredTransactions = data.transactions;
+	let filteredTransactions = filterTransactions({
+		date: selectedDate,
+		transactions: data.transactions,
+		query: searchTransactionsQuery
+	});
 	$: bill = filteredTransactions.reduce((acc, transaction) => acc + transaction.value, 0);
-
-	console.log(date.utc(data.transactions[0].date).format());
-	console.log(date.utc(data.transactions[0].endsAt).format());
 </script>
 
 <svelte:head>
@@ -134,46 +135,56 @@
 <ul class="mt-4 flex flex-col">
 	{#each filteredTransactions as transaction, i}
 		<li>
-			<div class="flex justify-between gap-2">
-				<span class="text-lg font-bold">
-					{transaction.name}
-				</span>
+			<a href="/app/transactions/{transaction.id}/edit">
+				<div class="flex justify-between gap-2">
+					<span class="text-lg font-bold">
+						{transaction.name}
+					</span>
 
-				<span class="text-lg">
-					<Currency value={transaction.value} />
-				</span>
-			</div>
+					<span class="text-lg">
+						<Currency value={transaction.value} />
+					</span>
+				</div>
 
-			<div class="flex justify-between">
-				<span class="text-sm">
-					{date.utc(transaction.date).format('DD/MM/YY')}
-				</span>
+				<div class="flex justify-between">
+					<span class="text-sm">
+						{date.utc(transaction.date).format('DD/MM/YY')}
+					</span>
 
-				<span class="text-nowrap text-sm">
-					{#if transaction.endsAt !== null}
-						{@const numberOfInstallments = getDatesDiffInMonths(
-							transaction.date,
-							transaction.endsAt
-						)}
-						{#if numberOfInstallments === 1}
-							À vista
-						{:else}
-							{@const paidInstallments = getDatesDiffInMonths(
+					<span class="text-nowrap text-sm">
+						{#if transaction.endsAt !== null}
+							{@const numberOfInstallments = getDatesDiffInMonths(
 								transaction.date,
-								date(selectedDate, 'MM/YYYY').utc(true).toDate()
+								transaction.endsAt
 							)}
+							{#if numberOfInstallments === 1}
+								À vista
+							{:else}
+								{@const paidInstallments = getDatesDiffInMonths(
+									transaction.date,
+									date(selectedDate, 'MM/YYYY').utc(true).toDate()
+								)}
 
-							{paidInstallments}/{numberOfInstallments}
+								{paidInstallments}/{numberOfInstallments}
+							{/if}
+						{:else}
+							Recorrente
 						{/if}
-					{:else}
-						Recorrente
-					{/if}
-				</span>
-			</div>
+					</span>
+				</div>
 
-			{#if i !== filteredTransactions.length - 1}
-				<div class="divider my-1"></div>
-			{/if}
+				{#if transaction.tags.length > 0}
+					<div class="mt-2 flex flex-wrap gap-2">
+						{#each transaction.tags as tag}
+							<div class="badge badge-neutral">{tag}</div>
+						{/each}
+					</div>
+				{/if}
+
+				{#if i !== filteredTransactions.length - 1}
+					<div class="divider my-1"></div>
+				{/if}
+			</a>
 		</li>
 	{/each}
 </ul>
