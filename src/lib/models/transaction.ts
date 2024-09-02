@@ -5,19 +5,24 @@ export function filterTransactions<
 		name: string;
 		endsAt: Date | null;
 		date: Date;
+		tags: string[];
 	}
->(options: { date: string; query: string; transactions: T[] }): T[] {
+>(options: { date: string; query: string; transactions: T[]; queryField: 'name' | 'tags' }): T[] {
 	const minDate = date(options.date, 'MM/YYYY').utc(true);
 
 	return options.transactions.filter((transaction) => {
-		const lowerCaseQuery = options.query?.toLowerCase();
+		const query = options.query.toLowerCase();
 
 		const checkMatchesQuery = () => {
-			if (lowerCaseQuery === undefined || lowerCaseQuery.length === 0) {
+			if (query === undefined || query.length === 0) {
 				return true;
 			}
 
-			return transaction.name.toLowerCase().startsWith(lowerCaseQuery);
+			if (options.queryField === 'tags') {
+				return transaction.tags.some((tag) => tag === query);
+			}
+
+			return transaction.name.toLowerCase().startsWith(query);
 		};
 
 		const transactionDate = date.utc(transaction.date);

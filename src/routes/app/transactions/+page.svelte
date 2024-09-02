@@ -14,15 +14,25 @@
 
 	export let data;
 
-	let searchTransactionsQuery = '';
-	let selectedDate = date().utc(true).add(1, 'month').format('MM/YYYY');
-	let highlightedDate = selectedDate;
+	type FilterTransactionOpions = {
+		date: string;
+		query: string;
+		queryField: 'name' | 'tags';
+	};
+
+	let filterTransactionOptions: FilterTransactionOpions = {
+		date: date().utc(true).add(1, 'month').format('MM/YYYY'),
+		query: '',
+		queryField: 'name'
+	};
+
+	let highlightedDate = filterTransactionOptions.date;
 
 	let filteredTransactions = filterTransactions({
-		date: selectedDate,
-		transactions: data.transactions,
-		query: searchTransactionsQuery
+		...filterTransactionOptions,
+		transactions: data.transactions
 	});
+
 	$: bill = filteredTransactions.reduce((acc, transaction) => acc + transaction.value, 0);
 </script>
 
@@ -33,7 +43,7 @@
 <div>
 	<div class="flex items-baseline gap-2">
 		<h2 class="text-2xl">Fatura</h2>
-		<small> ({selectedDate}) </small>
+		<small> ({filterTransactionOptions.date}) </small>
 	</div>
 
 	<Currency class="text-4xl font-extrabold" value={bill} />
@@ -45,7 +55,7 @@
 	<div>
 		<h2 class="text-2xl">À vencer</h2>
 		<span class="text-sm">
-			no mês {selectedDate}
+			no mês {filterTransactionOptions.date}
 		</span>
 	</div>
 
@@ -84,7 +94,7 @@
 					</div>
 
 					<span>
-						Mês selecionado: {selectedDate}
+						Mês selecionado: {filterTransactionOptions.date}
 					</span>
 
 					<div class="divider my-0 mb-2"></div>
@@ -93,12 +103,13 @@
 						min={data.minDate}
 						max={data.maxDate}
 						{highlightedDate}
-						bind:selectedDate
+						bind:selectedDate={filterTransactionOptions.date}
 						onChange={(date) => {
 							filteredTransactions = filterTransactions({
 								date,
 								transactions: data.transactions,
-								query: searchTransactionsQuery
+								query: filterTransactionOptions.query,
+								queryField: filterTransactionOptions.queryField
 							});
 						}}
 					/>
@@ -113,16 +124,23 @@
 		on:submit={(e) => {
 			e.preventDefault();
 			filteredTransactions = filterTransactions({
-				date: selectedDate,
 				transactions: data.transactions,
-				query: searchTransactionsQuery
+				...filterTransactionOptions
 			});
 		}}
 		class="join w-full"
 	>
+		<select
+			name="queryField"
+			bind:value={filterTransactionOptions.queryField}
+			class="join-item select select-bordered text-[1rem]"
+		>
+			<option value="name">Nome</option>
+			<option value="tags">Tags</option>
+		</select>
 		<input
 			name="query"
-			bind:value={searchTransactionsQuery}
+			bind:value={filterTransactionOptions.query}
 			class="input join-item input-bordered w-full"
 			placeholder="Buscar transações"
 		/>
@@ -162,7 +180,7 @@
 							{:else}
 								{@const paidInstallments = getDatesDiffInMonths(
 									transaction.date,
-									date(selectedDate, 'MM/YYYY').utc(true).toDate()
+									date(filterTransactionOptions.date, 'MM/YYYY').utc(true).toDate()
 								)}
 
 								{paidInstallments}/{numberOfInstallments}

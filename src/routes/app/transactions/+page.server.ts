@@ -34,8 +34,6 @@ export const load = (async (e) => {
 	});
 
 	return {
-		transactions,
-		search: '',
-		count: transactions.length
+		transactions
 	};
 }) satisfies PageServerLoad;
