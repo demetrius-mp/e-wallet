@@ -47,26 +47,22 @@
 		use:melt={$root}
 		aria-invalid={hasError}
 		class:input-error={hasError}
-		class="input input-bordered flex h-auto min-h-12 min-w-[280px] flex-row flex-wrap gap-2 border py-1.5 pl-2"
+		class="input input-bordered flex h-auto min-h-12 flex-row flex-wrap gap-2 border py-1.5 pl-2"
 		class:pl-4={$tags.length === 0}
 	>
 		{#each $tags as t}
 			<div
 				use:melt={$tag(t)}
-				class="text-magnum-900 flex items-center overflow-hidden rounded-md bg-base-200 p-1 [word-break:break-word] data-[selected]:bg-slate-700"
+				class="flex items-center overflow-hidden rounded-md bg-base-200 p-1 [word-break:break-word] data-[selected]:bg-base-300"
 			>
 				<span class="flex items-center border-r border-base-100 px-1.5">{t.value}</span>
-				<button
-					type="button"
-					use:melt={$deleteTrigger(t)}
-					class="enabled:hover:bg-magnum-300 flex h-full items-center px-1"
-				>
+				<button type="button" use:melt={$deleteTrigger(t)} class="flex h-full items-center px-1">
 					<IconClose class="size-3" />
 				</button>
 			</div>
 			<div
 				use:melt={$edit(t)}
-				class="flex items-center overflow-hidden rounded-md px-1.5 [word-break:break-word] data-[invalid-edit]:focus:!ring-red-500"
+				class="flex items-center overflow-hidden rounded-md px-1.5 [word-break:break-word] data-[invalid-edit]:focus:!ring-error"
 			/>
 		{/each}
 
@@ -78,7 +74,7 @@
 			use:melt={$input}
 			type="text"
 			{placeholder}
-			class="min-w-[4.5rem] shrink grow basis-0 border-0 bg-transparent outline-none focus:!ring-0 data-[invalid]:text-red-500"
+			class="min-w-[4.5rem] shrink grow basis-0 border-0 bg-transparent outline-none focus:!ring-0 data-[invalid]:text-error"
 			class:pl-2={$tags.length > 0}
 		/>
 	</div>
