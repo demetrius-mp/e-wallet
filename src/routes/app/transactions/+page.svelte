@@ -82,7 +82,7 @@
 			}
 		}}
 	>
-		<button use:melt={trigger} aria-label="Abrir calendário" class="btn btn-circle btn-neutral">
+		<button use:melt={trigger} aria-label="Abrir calendário" class="btn btn-circle">
 			<IconCalendarMonth class="text-xl" />
 		</button>
 
@@ -203,7 +203,7 @@
 					<div class="mt-2 flex flex-wrap gap-2">
 						{#each transaction.tags as tag}
 							<div
-								class="badge badge-neutral"
+								class="badge badge-outline"
 								class:badge-primary={checkShouldHighlightTag(tag, filterTransactionOptions)}
 							>
 								{tag}
