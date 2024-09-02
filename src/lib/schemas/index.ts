@@ -35,6 +35,17 @@ export const editAccountSchema = z.object({
 	password: z.string().min(8)
 });
 
+export const timezoneSchema = z.object({
+	timezone: z.string().refine(
+		(value) => {
+			return Intl.supportedValuesOf('timeZone').includes(value);
+		},
+		{
+			message: 'Fuso horário inválido'
+		}
+	)
+});
+
 export const resetPasswordSchema = z
 	.object({
 		currentPassword: z.string().min(8),

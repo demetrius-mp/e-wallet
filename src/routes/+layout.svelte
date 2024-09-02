@@ -12,6 +12,7 @@
 	import IconAccount from '~icons/mdi/Account';
 	import IconAccountEdit from '~icons/mdi/AccountEdit';
 	import IconLogout from '~icons/mdi/Logout';
+	import IconMapClock from '~icons/mdi/MapClock';
 	import IconWallet from '~icons/mdi/Wallet';
 	import '../app.postcss';
 
@@ -80,11 +81,20 @@
 							href="/app/account/edit"
 							class="flex w-full items-center gap-2 rounded-lg p-2 data-[highlighted]:bg-base-content/5"
 							use:melt={item}
-							type="submit"
 						>
 							<IconAccountEdit class="text-xl" />
 							Atualizar conta
 						</a>
+
+						<a
+							href="/app/account/timezone"
+							class="flex w-full items-center gap-2 rounded-lg p-2 data-[highlighted]:bg-base-content/5"
+							use:melt={item}
+						>
+							<IconMapClock class="text-xl" />
+							Fuso horário
+						</a>
+
 						<ButtonForm
 							action="/sign-out"
 							bind:submitting={$showPageLoadingIndicatorStore}
