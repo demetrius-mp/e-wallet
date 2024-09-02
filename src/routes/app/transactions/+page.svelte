@@ -34,6 +34,14 @@
 	});
 
 	$: bill = filteredTransactions.reduce((acc, transaction) => acc + transaction.value, 0);
+
+	function checkShouldHighlightTag(tag: string, filterTransactionOptions: FilterTransactionOpions) {
+		if (filterTransactionOptions.queryField === 'tags') {
+			return tag == filterTransactionOptions.query;
+		}
+
+		return false;
+	}
 </script>
 
 <svelte:head>
@@ -194,7 +202,12 @@
 				{#if transaction.tags.length > 0}
 					<div class="mt-2 flex flex-wrap gap-2">
 						{#each transaction.tags as tag}
-							<div class="badge badge-neutral">{tag}</div>
+							<div
+								class="badge badge-neutral"
+								class:badge-primary={checkShouldHighlightTag(tag, filterTransactionOptions)}
+							>
+								{tag}
+							</div>
 						{/each}
 					</div>
 				{/if}
