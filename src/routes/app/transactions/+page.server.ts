@@ -5,7 +5,7 @@ import type { PageServerLoad } from './$types';
 export const load = (async (e) => {
 	const { currentUser } = await e.parent();
 
-	const lastMonth = date().startOf('month').subtract(1, 'month').toDate();
+	const thisMonth = date().startOf('month').toDate();
 
 	const transactions = await db.transaction.findMany({
 		where: {
@@ -14,7 +14,7 @@ export const load = (async (e) => {
 			OR: [
 				{
 					endsAt: {
-						gte: lastMonth
+						gte: thisMonth
 					}
 				},
 				{
