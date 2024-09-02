@@ -2,13 +2,16 @@
 	import Currency from '$lib/components/Currency.svelte';
 	import FloatingButton from '$lib/components/FloatingButton.svelte';
 	import MonthCalendar from '$lib/components/MonthCalendar.svelte';
+	import { addToast } from '$lib/components/Toasts.svelte';
 	import Popover from '$lib/components/UI/Popover.svelte';
 	import Tooltip from '$lib/components/UI/Tooltip.svelte';
 	import { filterTransactions } from '$lib/models/transaction.js';
 	import { date, getDatesDiffInMonths } from '$lib/utils/date.js';
+	import { formatCurrency } from '$lib/utils/formatCurrency.js';
 	import { fade } from 'svelte/transition';
 	import IconCalendarMonth from '~icons/mdi/CalendarMonth';
 	import IconClose from '~icons/mdi/Close';
+	import IconContentCopy from '~icons/mdi/ContentCopy';
 	import IconMagnify from '~icons/mdi/Magnify';
 	import IconPlus from '~icons/mdi/Plus';
 
@@ -42,6 +45,37 @@
 
 		return false;
 	}
+
+	async function copyTransactionsToClipboard() {
+		const initialReport = `Fatura ${filterTransactionOptions.date}\n\n`;
+
+		const report = filteredTransactions.reduce((acc, transaction) => {
+			let line = `${transaction.name} - ${formatCurrency(transaction.value)}\n`;
+
+			if (transaction.installments !== null) {
+				const paidInstallments = getDatesDiffInMonths(
+					transaction.date,
+					date(filterTransactionOptions.date, 'MM/YYYY').utc(true).toDate()
+				);
+
+				line += `Parcela ${paidInstallments}/${transaction.installments}\n`;
+			} else {
+				line += 'Recorrente\n';
+			}
+
+			return acc + line + '\n';
+		}, initialReport);
+
+		await navigator.clipboard.writeText(report);
+
+		addToast({
+			data: {
+				kind: 'success',
+				description: 'Copiado com sucesso!'
+			},
+			closeDelay: 3000
+		});
+	}
 </script>
 
 <svelte:head>
@@ -67,64 +101,70 @@
 		</span>
 	</div>
 
-	<Popover
-		let:melt
-		let:trigger
-		let:open
-		let:overlay
-		let:content
-		let:arrow
-		let:close
-		props={{
-			forceVisible: true,
-			positioning: {
-				placement: 'bottom-start'
-			}
-		}}
-	>
-		<button use:melt={trigger} aria-label="Abrir calendário" class="btn btn-circle">
-			<IconCalendarMonth class="text-xl" />
+	<div class="flex gap-2">
+		<button class="btn btn-circle" on:click={copyTransactionsToClipboard}>
+			<IconContentCopy class="text-xl" />
 		</button>
 
-		{#if open}
-			<div use:melt={overlay} class="fixed inset-0 z-40" />
+		<Popover
+			let:melt
+			let:trigger
+			let:open
+			let:overlay
+			let:content
+			let:arrow
+			let:close
+			props={{
+				forceVisible: true,
+				positioning: {
+					placement: 'bottom-start'
+				}
+			}}
+		>
+			<button use:melt={trigger} aria-label="Abrir calendário" class="btn btn-circle">
+				<IconCalendarMonth class="text-xl" />
+			</button>
 
-			<div use:melt={content} transition:fade={{ duration: 100 }} class="z-40">
-				<div use:melt={arrow} />
+			{#if open}
+				<div use:melt={overlay} class="fixed inset-0 z-40" />
 
-				<div class="max-w-xs rounded-box bg-base-200 p-4 pt-2">
-					<div class="flex items-center justify-between gap-2">
-						<span class="text-lg font-bold"> Filtrar por mês </span>
+				<div use:melt={content} transition:fade={{ duration: 100 }} class="z-40">
+					<div use:melt={arrow} />
 
-						<button use:melt={close} aria-label="Fechar calendário" class="btn btn-circle btn-sm">
-							<IconClose class="text-xl" />
-						</button>
+					<div class="max-w-xs rounded-box bg-base-200 p-4 pt-2">
+						<div class="flex items-center justify-between gap-2">
+							<span class="text-lg font-bold"> Filtrar por mês </span>
+
+							<button use:melt={close} aria-label="Fechar calendário" class="btn btn-circle btn-sm">
+								<IconClose class="text-xl" />
+							</button>
+						</div>
+
+						<span>
+							Mês selecionado: {filterTransactionOptions.date}
+						</span>
+
+						<div class="divider my-0 mb-2"></div>
+
+						<MonthCalendar
+							min={data.minDate}
+							max={data.maxDate}
+							{highlightedDate}
+							bind:selectedDate={filterTransactionOptions.date}
+							onChange={(date) => {
+								filteredTransactions = filterTransactions({
+									date,
+									transactions: data.transactions,
+									query: filterTransactionOptions.query,
+									queryField: filterTransactionOptions.queryField
+								});
+							}}
+						/>
 					</div>
-
-					<span>
-						Mês selecionado: {filterTransactionOptions.date}
-					</span>
-
-					<div class="divider my-0 mb-2"></div>
-
-					<MonthCalendar
-						min={data.minDate}
-						max={data.maxDate}
-						{highlightedDate}
-						bind:selectedDate={filterTransactionOptions.date}
-						onChange={(date) => {
-							filteredTransactions = filterTransactions({
-								date,
-								transactions: data.transactions,
-								query: filterTransactionOptions.query,
-								queryField: filterTransactionOptions.queryField
-							});
-						}}
-					/>
 				</div>
-			</div>
-		{/if}
-	</Popover>
+			{/if}
+		</Popover>
+	</div>
 </div>
 
 <div class="mt-4">
@@ -179,11 +219,7 @@
 
 					<span class="text-nowrap text-sm">
 						{#if transaction.endsAt !== null}
-							{@const numberOfInstallments = getDatesDiffInMonths(
-								transaction.date,
-								transaction.endsAt
-							)}
-							{#if numberOfInstallments === 1}
+							{#if transaction.installments === 1}
 								À vista
 							{:else}
 								{@const paidInstallments = getDatesDiffInMonths(
@@ -191,7 +227,7 @@
 									date(filterTransactionOptions.date, 'MM/YYYY').utc(true).toDate()
 								)}
 
-								{paidInstallments}/{numberOfInstallments}
+								{paidInstallments}/{transaction.installments}
 							{/if}
 						{:else}
 							Recorrente
