@@ -8,5 +8,10 @@ export default defineConfig({
 		Icons({
 			compiler: 'svelte'
 		})
-	]
+	],
+	resolve: {
+		alias: {
+			'.prisma/client/index-browser': './node_modules/.prisma/client/index-browser.js'
+		}
+	}
 });
