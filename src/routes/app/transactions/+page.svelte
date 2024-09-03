@@ -67,7 +67,7 @@
 	}
 
 	async function copyTransactionsToClipboard() {
-		const initialReport = `Fatura ${filterTransactionOptions.date}\n\n`;
+		const initialReport = `Fatura ${filterTransactionOptions.date}\nValor total: ${formatCurrency(bill)}\n\n`;
 
 		const report = filteredTransactions
 			.reduce((acc, transaction) => {
