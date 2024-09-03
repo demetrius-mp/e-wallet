@@ -113,7 +113,7 @@
 				{/if}
 			</Dropdown>
 		{:else}
-			<a href="/sign-in" class="btn btn-outline btn-primary uppercase">Sign in</a>
+			<a href="/sign-in" class="btn btn-outline btn-primary uppercase">Entrar</a>
 		{/if}
 	</div>
 </div>
