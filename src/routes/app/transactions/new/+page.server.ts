@@ -7,11 +7,24 @@ import { fail, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load = (async () => {
+export const load = (async (e) => {
+	const { currentUser } = await e.parent();
+
 	const form = await superValidate(zod(transactionSchema));
 
+	const groups = await db.group.findMany({
+		where: {
+			userId: currentUser.id
+		},
+		omit: {
+			userId: true
+		},
+		take: 10
+	});
+
 	return {
-		form
+		form,
+		groups
 	};
 }) satisfies PageServerLoad;
 

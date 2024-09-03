@@ -6,8 +6,17 @@ export function filterTransactions<
 		endsAt: Date | null;
 		date: Date;
 		tags: string[];
+		group: {
+			id: number;
+		} | null;
 	}
->(options: { date: string; query: string; transactions: T[]; queryField: 'name' | 'tags' }): T[] {
+>(options: {
+	date: string;
+	query: string;
+	transactions: T[];
+	queryField: 'name' | 'tags';
+	groupId?: number;
+}): T[] {
 	const minDate = date(options.date, 'MM/YYYY').utc(true);
 
 	return options.transactions.filter((transaction) => {
@@ -25,11 +34,23 @@ export function filterTransactions<
 			return transaction.name.toLowerCase().startsWith(query);
 		};
 
+		const checkMatchesGroupId = () => {
+			if (options.groupId === undefined) {
+				return true;
+			}
+
+			return transaction.group?.id === options.groupId;
+		};
+
+		if (!checkMatchesGroupId() || !checkMatchesQuery()) {
+			return false;
+		}
+
 		const transactionDate = date.utc(transaction.date);
 		const happenedBeforeMinDate = transactionDate.isBefore(minDate);
 
 		if (transaction.endsAt === null) {
-			return happenedBeforeMinDate && checkMatchesQuery();
+			return happenedBeforeMinDate;
 		}
 
 		const transactionEndsAtDate = date.utc(transaction.endsAt);
@@ -39,6 +60,6 @@ export function filterTransactions<
 
 		const matchesDate = happenedBeforeMinDate && (endsAfterMinDate || endsAtSameMonth);
 
-		return matchesDate && checkMatchesQuery();
+		return matchesDate;
 	});
 }

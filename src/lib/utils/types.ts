@@ -55,3 +55,19 @@ export type HTMLInputAutocompleteAttribute =
 	| 'tel-local-suffix'
 	| 'tel-extension'
 	| 'impp';
+
+type ExpandRecursively<T> = T extends object
+	? T extends infer O
+		? { [K in keyof O]: ExpandRecursively<O[K]> }
+		: never
+	: T;
+
+export type PartialBy<T, K extends keyof T> = ExpandRecursively<Omit<T, K> & Partial<Pick<T, K>>>;
+
+export type RecursiveRequired<T> = ExpandRecursively<
+	Required<{
+		[P in keyof T]: T[P] extends object | undefined ? RecursiveRequired<Required<T[P]>> : T[P];
+	}>
+>;
+
+export type RequiredFields<T, K extends keyof T> = ExpandRecursively<T & Required<Pick<T, K>>>;

@@ -30,9 +30,17 @@ export const load = (async (e) => {
 
 	const form = await superValidate(zod(transactionSchema));
 
+	const groups = await db.group.findMany({
+		where: {
+			userId: currentUser.id
+		},
+		take: 10
+	});
+
 	return {
 		form,
-		transaction
+		transaction,
+		groups
 	};
 }) satisfies PageServerLoad;
 
@@ -74,7 +82,8 @@ export const actions = {
 				date: data.date,
 				tags: data.tags,
 				endsAt: data.endsAt,
-				installments: data.installments
+				installments: data.installments,
+				groupId: data.groupId
 			}
 		});
 

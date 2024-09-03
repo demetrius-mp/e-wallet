@@ -14,4 +14,4 @@
 
 <div class="divider my-0"></div>
 
-<TransactionForm data={data.form} />
+<TransactionForm data={data.form} groups={data.groups} />

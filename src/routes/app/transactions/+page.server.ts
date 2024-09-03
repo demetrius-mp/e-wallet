@@ -27,9 +27,18 @@ export const load = (async (e) => {
 		orderBy: {
 			date: 'desc'
 		},
+		include: {
+			group: {
+				select: {
+					id: true,
+					name: true
+				}
+			}
+		},
 		omit: {
 			userId: true,
-			archived: true
+			archived: true,
+			groupId: true
 		}
 	});
 

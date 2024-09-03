@@ -22,10 +22,23 @@ model User {
   password String @map("password")
 
   transactions Transaction[]
+  groups       Group[]
 
   archived Boolean @default(false) @map("archived")
 
   @@map("users")
+}
+
+model Group {
+  id   Int    @id @default(autoincrement()) @map("id")
+  name String @map("name")
+
+  userId Int  @map("user_id")
+  user   User @relation(fields: [userId], references: [id])
+
+  transactions Transaction[]
+
+  @@map("groups")
 }
 
 model Transaction {
@@ -40,6 +53,9 @@ model Transaction {
 
   userId Int  @map("user_id")
   user   User @relation(fields: [userId], references: [id])
+
+  groupId Int?   @map("group_id")
+  group   Group? @relation(fields: [groupId], references: [id])
 
   archived Boolean @default(false) @map("archived")
 

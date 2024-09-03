@@ -14,4 +14,8 @@
 
 <div class="divider my-0"></div>
 
-<TransactionForm data={data.form} deleteAction="/app/transactions/{data.transaction.id}/delete" />
+<TransactionForm
+	data={data.form}
+	groups={data.groups}
+	deleteAction="/app/transactions/{data.transaction.id}/delete"
+/>

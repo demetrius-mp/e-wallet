@@ -24,4 +24,15 @@
 
 		<p>Visualize suas transações de cartão de crédito.</p>
 	</a>
+
+	<a href="/app/groups" class="flex flex-col gap-2 rounded-xl bg-base-200 p-4 shadow-lg">
+		<div class="flex items-center justify-between gap-2">
+			<h2 class="text-xl font-semibold">Grupos</h2>
+			<div>
+				<IconArrowRight class="text-xl" />
+			</div>
+		</div>
+
+		<p>Organize suas transações por meio de grupos.</p>
+	</a>
 </div>

@@ -8,6 +8,7 @@ export const load = (async (e) => {
 	form.data.endsAt = 'Recorrente';
 
 	return {
+		...e.data,
 		form
 	};
 }) satisfies PageLoad;

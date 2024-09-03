@@ -6,6 +6,7 @@
 	import Popover from '$lib/components/UI/Popover.svelte';
 	import Tooltip from '$lib/components/UI/Tooltip.svelte';
 	import { filterTransactions } from '$lib/models/transaction.js';
+	import { classes } from '$lib/utils/classes.js';
 	import { date, getDatesDiffInMonths } from '$lib/utils/date.js';
 	import { formatCurrency } from '$lib/utils/formatCurrency.js';
 	import { fade } from 'svelte/transition';
@@ -17,19 +18,31 @@
 
 	export let data;
 
-	type FilterTransactionOpions = {
+	type FilterTransactionOptions = {
 		date: string;
-		query: string;
 		queryField: 'name' | 'tags';
+		query: string;
+		groupId?: number;
 	};
 
-	let filterTransactionOptions: FilterTransactionOpions = {
+	let filterTransactionOptions: FilterTransactionOptions = {
 		date: date().utc(true).add(1, 'month').format('MM/YYYY'),
 		query: '',
 		queryField: 'name'
 	};
 
 	let highlightedDate = filterTransactionOptions.date;
+
+	function setFilteredTransactions(options?: Partial<FilterTransactionOptions>) {
+		filterTransactionOptions = Object.assign(filterTransactionOptions, options);
+
+		filteredTransactions = filterTransactions({
+			transactions: data.transactions,
+			...filterTransactionOptions
+		});
+
+		return filterTransactionOptions;
+	}
 
 	let filteredTransactions = filterTransactions({
 		...filterTransactionOptions,
@@ -38,12 +51,19 @@
 
 	$: bill = filteredTransactions.reduce((acc, transaction) => acc + transaction.value, 0);
 
-	function checkShouldHighlightTag(tag: string, filterTransactionOptions: FilterTransactionOpions) {
+	function checkTagIsSelected(tag: string, filterTransactionOptions: FilterTransactionOptions) {
 		if (filterTransactionOptions.queryField === 'tags') {
 			return tag == filterTransactionOptions.query;
 		}
 
 		return false;
+	}
+
+	function checkGroupIsSelected(
+		groupId: number,
+		filterTransactionOptions: FilterTransactionOptions
+	) {
+		return groupId === filterTransactionOptions.groupId;
 	}
 
 	async function copyTransactionsToClipboard() {
@@ -150,13 +170,10 @@
 							min={data.minDate}
 							max={data.maxDate}
 							{highlightedDate}
-							bind:selectedDate={filterTransactionOptions.date}
+							selectedDate={filterTransactionOptions.date}
 							onChange={(date) => {
-								filteredTransactions = filterTransactions({
-									date,
-									transactions: data.transactions,
-									query: filterTransactionOptions.query,
-									queryField: filterTransactionOptions.queryField
+								setFilteredTransactions({
+									date
 								});
 							}}
 						/>
@@ -171,10 +188,7 @@
 	<form
 		on:submit={(e) => {
 			e.preventDefault();
-			filteredTransactions = filterTransactions({
-				transactions: data.transactions,
-				...filterTransactionOptions
-			});
+			setFilteredTransactions();
 		}}
 		class="join w-full"
 	>
@@ -235,18 +249,70 @@
 					</span>
 				</div>
 
-				{#if transaction.tags.length > 0}
-					<div class="mt-2 flex flex-wrap gap-2">
-						{#each transaction.tags as tag}
-							<div
-								class="badge badge-outline"
-								class:badge-primary={checkShouldHighlightTag(tag, filterTransactionOptions)}
-							>
-								{tag}
-							</div>
-						{/each}
-					</div>
-				{/if}
+				<div class="mt-2 flex flex-wrap gap-2">
+					{#if transaction.group}
+						{@const isSelected = checkGroupIsSelected(
+							transaction.group.id,
+							filterTransactionOptions
+						)}
+						<button
+							aria-label="Filtrar por grupo"
+							on:click={(e) => {
+								e.preventDefault();
+
+								if (transaction.group === null) {
+									return;
+								}
+
+								if (isSelected) {
+									setFilteredTransactions({
+										groupId: undefined
+									});
+
+									return;
+								}
+
+								setFilteredTransactions({
+									groupId: transaction.group.id
+								});
+							}}
+							class="badge badge-accent z-50"
+							class:badge-outline={!isSelected}
+						>
+							{transaction.group.name}
+						</button>
+					{/if}
+					{#each transaction.tags as tag}
+						{@const isSelected = checkTagIsSelected(tag, filterTransactionOptions)}
+						<button
+							aria-label="Filtrar por tag"
+							on:click={(e) => {
+								e.preventDefault();
+
+								if (isSelected) {
+									setFilteredTransactions({
+										query: '',
+										queryField: 'name'
+									});
+
+									return;
+								}
+
+								setFilteredTransactions({
+									query: tag,
+									queryField: 'tags'
+								});
+							}}
+							class={classes(
+								'badge z-50',
+								isSelected && 'badge-primary',
+								!isSelected && 'badge-outline'
+							)}
+						>
+							{tag}
+						</button>
+					{/each}
+				</div>
 
 				{#if i !== filteredTransactions.length - 1}
 					<div class="divider my-1"></div>

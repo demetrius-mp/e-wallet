@@ -68,9 +68,14 @@ export const resetPasswordSchema = z
 		}
 	});
 
+export const groupSchema = z.object({
+	name: z.string().min(1)
+});
+
 export const transactionSchema = z.object({
 	name: z.string().min(1),
 	value: z.number().min(0.01).step(0.01),
+	groupId: z.number().min(1).optional(),
 	saveAndContinue: z.string().nullish(),
 	date: z
 		.string()
@@ -149,6 +154,7 @@ export function transformTransactionFormData(data: z.output<typeof transactionSc
 		date: transformDate(data.date),
 		endsAt: transformEndsAt(data.endsAt),
 		installments: data.installments,
-		saveAndContinue: Boolean(data.saveAndContinue)
+		saveAndContinue: Boolean(data.saveAndContinue),
+		groupId: data.groupId || null
 	};
 }
