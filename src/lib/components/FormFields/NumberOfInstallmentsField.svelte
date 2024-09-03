@@ -74,7 +74,6 @@
 	<div class="join">
 		<input
 			type="number"
-			readonly
 			{...$$restProps}
 			{required}
 			bind:value={installments}
