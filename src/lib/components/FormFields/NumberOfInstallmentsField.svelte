@@ -10,6 +10,7 @@
 		errors?: string[];
 		endsAt?: string;
 		name: string;
+		initialDate: string;
 	}
 
 	export let label: string;
@@ -17,6 +18,7 @@
 	export let installments: number | null | undefined = undefined;
 	export let errors: string[] | undefined = undefined;
 	export let endsAt: string = 'Recorrente';
+	export let initialDate: string;
 
 	function onRecurrentClick() {
 		installments = null;
@@ -25,20 +27,26 @@
 
 	function onMinusClick() {
 		installments = (installments || 0) - 1;
-		endsAt = date.utc().add(installments, 'months').format('MM/YY');
+		endsAt = date.utc(initialDate, 'DD/MM/YY').add(installments, 'months').format('MM/YY');
 	}
 
 	function onPlusClick() {
 		installments = (installments || 0) + 1;
-		endsAt = date.utc().add(installments, 'months').format('MM/YY');
+		endsAt = date.utc(initialDate, 'DD/MM/YY').add(installments, 'months').format('MM/YY');
 	}
 
 	function isNextMonth(d: string) {
-		const today = date.utc().startOf('month');
+		const today = date.utc(initialDate, 'DD/MM/YY').startOf('month');
 		const diff = date.utc(d, 'MM/YY').diff(today, 'month');
 
 		return diff === 1;
 	}
+
+	function calculateEndsAt(installments: number, initialDate: string) {
+		return date.utc(initialDate, 'DD/MM/YY').add(installments, 'months').format('MM/YY');
+	}
+
+	$: endsAt = installments ? calculateEndsAt(installments, initialDate) : 'Recorrente';
 
 	$: error = errors?.at(0);
 	$: hasError = Boolean(error);

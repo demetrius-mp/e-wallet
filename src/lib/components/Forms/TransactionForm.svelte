@@ -43,12 +43,15 @@
 		errors={$errors?.date}
 	/>
 
-	<NumberOfInstallmentsField
-		label="Parcelas restantes"
-		name="installments"
-		bind:installments={$form.installments}
-		bind:endsAt={$form.endsAt}
-	/>
+	{#key $form.date}
+		<NumberOfInstallmentsField
+			label="Parcelas restantes"
+			name="installments"
+			initialDate={$form.date}
+			bind:installments={$form.installments}
+			bind:endsAt={$form.endsAt}
+		/>
+	{/key}
 
 	<input type="hidden" name="endsAt" value={$form.endsAt} />
 
