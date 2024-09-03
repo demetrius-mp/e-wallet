@@ -35,6 +35,14 @@
 		autocomplete="off"
 	/>
 
+	<DateField
+		name="date"
+		label="Data da compra"
+		bind:value={$form.date}
+		{...$constraints.date}
+		errors={$errors?.date}
+	/>
+
 	<NumberOfInstallmentsField
 		label="Parcelas restantes"
 		name="installments"
@@ -54,14 +62,6 @@
 			maxTags: 5,
 			add: (tag) => tag.trim()
 		}}
-	/>
-
-	<DateField
-		name="date"
-		label="Data da compra"
-		bind:value={$form.date}
-		{...$constraints.date}
-		errors={$errors?.date}
 	/>
 
 	<div class="flex justify-end gap-2" class:justify-between={deleteAction}>
