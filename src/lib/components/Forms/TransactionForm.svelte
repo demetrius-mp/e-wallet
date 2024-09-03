@@ -69,7 +69,15 @@
 			<ButtonForm action={deleteAction} confirmation="Tem certeza que quer excluir?" let:submitting>
 				<SubmitButton {submitting} class="btn btn-outline btn-error">Excluir</SubmitButton>
 			</ButtonForm>
+		{:else}
+			<input
+				name="saveAndContinue"
+				type="submit"
+				class="btn btn-outline btn-primary"
+				value="Salvar e continuar"
+			/>
 		{/if}
+
 		<SubmitButton submitting={$submitting} class="btn btn-primary">Salvar</SubmitButton>
 	</div>
 </form>

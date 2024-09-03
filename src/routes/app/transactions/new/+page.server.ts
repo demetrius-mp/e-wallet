@@ -2,6 +2,7 @@ import { transactionSchema, transformTransactionFormData } from '$lib/schemas';
 import { ensureAuth } from '$lib/server/auth/ensureAuth';
 import { db } from '$lib/server/db';
 import { redirectTo } from '$lib/server/redirectTo';
+import { setFlash } from 'sveltekit-flash-message/server';
 import { fail, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
@@ -38,6 +39,19 @@ export const actions = {
 			}
 		});
 
-		redirectTo(e, 302, '/app/transactions');
+		if (data.saveAndContinue) {
+			setFlash(
+				{
+					kind: 'success',
+					message: 'Transação criada com sucesso',
+					asToast: true
+				},
+				e
+			);
+
+			redirectTo(e, 302, '/app/transactions/new');
+		} else {
+			redirectTo(e, 302, '/app/transactions');
+		}
 	}
 } satisfies Actions;

@@ -71,6 +71,7 @@ export const resetPasswordSchema = z
 export const transactionSchema = z.object({
 	name: z.string().min(1),
 	value: z.number().min(0.01).step(0.01),
+	saveAndContinue: z.string().nullish(),
 	date: z
 		.string()
 		.length(8)
@@ -147,6 +148,7 @@ export function transformTransactionFormData(data: z.output<typeof transactionSc
 		tags: transformTags(data.tags),
 		date: transformDate(data.date),
 		endsAt: transformEndsAt(data.endsAt),
-		installments: data.installments
+		installments: data.installments,
+		saveAndContinue: Boolean(data.saveAndContinue)
 	};
 }
