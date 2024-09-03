@@ -69,22 +69,24 @@
 	async function copyTransactionsToClipboard() {
 		const initialReport = `Fatura ${filterTransactionOptions.date}\n\n`;
 
-		const report = filteredTransactions.reduce((acc, transaction) => {
-			let line = `${transaction.name} - ${formatCurrency(transaction.value)}\n`;
+		const report = filteredTransactions
+			.reduce((acc, transaction) => {
+				let line = `${transaction.name} - ${formatCurrency(transaction.value)}\n`;
 
-			if (transaction.installments !== null) {
-				const paidInstallments = getDatesDiffInMonths(
-					transaction.date,
-					date(filterTransactionOptions.date, 'MM/YYYY').utc(true).toDate()
-				);
+				if (transaction.installments !== null) {
+					const paidInstallments = getDatesDiffInMonths(
+						transaction.date,
+						date(filterTransactionOptions.date, 'MM/YYYY').utc(true).toDate()
+					);
 
-				line += `Parcela ${paidInstallments}/${transaction.installments}\n`;
-			} else {
-				line += 'Recorrente\n';
-			}
+					line += `Parcela ${paidInstallments}/${transaction.installments}\n`;
+				} else {
+					line += 'Recorrente\n';
+				}
 
-			return acc + line + '\n';
-		}, initialReport);
+				return acc + line + '\n';
+			}, initialReport)
+			.trim();
 
 		await navigator.clipboard.writeText(report);
 
