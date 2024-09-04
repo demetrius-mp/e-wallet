@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import Currency from '$lib/components/Currency.svelte';
 	import FloatingButton from '$lib/components/FloatingButton.svelte';
 	import MonthCalendar from '$lib/components/MonthCalendar.svelte';
@@ -25,10 +26,13 @@
 		groupId?: number;
 	};
 
+	const groupIdParam = $page.url.searchParams.get('groupId');
+
 	let filterTransactionOptions: FilterTransactionOptions = {
 		date: date().utc(true).add(1, 'month').format('MM/YYYY'),
 		query: '',
-		queryField: 'name'
+		queryField: 'name',
+		groupId: groupIdParam ? parseInt(groupIdParam) : undefined
 	};
 
 	let highlightedDate = filterTransactionOptions.date;

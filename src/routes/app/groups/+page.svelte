@@ -17,14 +17,18 @@
 
 <div class="divider my-0"></div>
 
-<ul class="mt-2">
+<ul class="mt-2 flex flex-col gap-4">
 	{#each data.groups as group}
 		<li>
-			<a href="/app/groups/{group.id}" class="flex rounded-xl bg-base-200 p-4 shadow-lg">
+			<div class="flex flex-col gap-2 rounded-xl bg-base-200 p-4 shadow-lg">
 				<h2 class="text-xl font-semibold">
 					{group.name}
 				</h2>
-			</a>
+
+				<a class="link" href="/app/transactions?groupId={group.id}">Ver transações</a>
+
+				<a class="link" href="/app/groups/{group.id}/edit">Editar grupo</a>
+			</div>
 		</li>
 	{/each}
 </ul>

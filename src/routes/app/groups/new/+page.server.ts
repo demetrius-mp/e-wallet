@@ -24,13 +24,13 @@ export const actions = {
 			return fail(400, { form });
 		}
 
-		const group = await db.group.create({
+		await db.group.create({
 			data: {
 				name: form.data.name,
 				userId: currentUser.id
 			}
 		});
 
-		redirectTo(e, 302, `/app/groups/${group.id}`);
+		redirectTo(e, 302, `/app/groups`);
 	}
 } satisfies Actions;

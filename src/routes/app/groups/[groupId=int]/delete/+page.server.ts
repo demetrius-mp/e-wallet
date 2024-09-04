@@ -15,6 +15,6 @@ export const actions = {
 			}
 		});
 
-		redirectTo(e, 302, '/app/transactions');
+		redirectTo(e, 302, '/app/groups');
 	}
 } satisfies Actions;

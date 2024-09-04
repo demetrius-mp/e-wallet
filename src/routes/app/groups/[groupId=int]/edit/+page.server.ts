@@ -38,6 +38,7 @@ export const load = (async (e) => {
 export const actions = {
 	async default(e) {
 		const currentUser = ensureAuth(e);
+		const groupId = parseInt(e.params.groupId);
 
 		const form = await superValidate(e, zod(groupSchema));
 
@@ -45,13 +46,17 @@ export const actions = {
 			return fail(400, { form });
 		}
 
-		const group = await db.group.create({
+		await db.group.update({
+			where: {
+				id: groupId,
+				userId: currentUser.id
+			},
 			data: {
 				name: form.data.name,
 				userId: currentUser.id
 			}
 		});
 
-		redirectTo(e, 302, `/app/groups/${group.id}`);
+		redirectTo(e, 302, `/app/groups`);
 	}
 } satisfies Actions;
