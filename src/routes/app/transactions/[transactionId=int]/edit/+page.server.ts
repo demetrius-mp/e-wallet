@@ -34,6 +34,9 @@ export const load = (async (e) => {
 		where: {
 			userId: currentUser.id
 		},
+		omit: {
+			userId: true
+		},
 		take: 10
 	});
 

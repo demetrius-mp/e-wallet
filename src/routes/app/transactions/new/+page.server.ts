@@ -48,7 +48,8 @@ export const actions = {
 				date: data.date,
 				tags: data.tags,
 				endsAt: data.endsAt,
-				installments: data.installments
+				installments: data.installments,
+				groupId: data.groupId
 			}
 		});
 

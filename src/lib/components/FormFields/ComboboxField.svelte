@@ -162,11 +162,7 @@
 	</ul>
 {/if}
 
-<input
-	use:melt={$hiddenInput}
-	type="hidden"
-	value={$meltSelected ? toItemValue($meltSelected.value) : ''}
-/>
+<input {name} type="hidden" value={$meltSelected ? toItemValue($meltSelected.value) : ''} />
 
 <style lang="postcss">
 	.combobox-menu {

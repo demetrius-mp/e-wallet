@@ -74,8 +74,8 @@ export const groupSchema = z.object({
 
 export const transactionSchema = z.object({
 	name: z.string().min(1),
-	value: z.number().min(0.01).step(0.01),
-	groupId: z.number().min(1).optional(),
+	value: z.coerce.number().min(0.01).step(0.01),
+	groupId: z.coerce.number().min(1).optional(),
 	saveAndContinue: z.string().nullish(),
 	date: z
 		.string()
@@ -104,7 +104,7 @@ export const transactionSchema = z.object({
 				message: 'Máximo de 5 tags'
 			}
 		),
-	installments: z.number().nullish(),
+	installments: z.coerce.number().nullish(),
 	endsAt: z.string().refine(
 		(value) => {
 			return value === 'Recorrente' || date(value, 'MM/YY', true).isValid();
