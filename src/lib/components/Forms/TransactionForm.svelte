@@ -51,7 +51,7 @@
 
 	{#key $form.date}
 		<NumberOfInstallmentsField
-			label="Parcelas restantes"
+			label="Parcelas"
 			name="installments"
 			initialDate={$form.date}
 			bind:installments={$form.installments}
