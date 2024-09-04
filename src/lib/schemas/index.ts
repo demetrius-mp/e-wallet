@@ -115,8 +115,8 @@ export const transactionSchema = z.object({
 	)
 });
 
-function transformTags(tags?: string): string[] | undefined {
-	if (!tags) return undefined;
+function transformTags(tags?: string): string[] {
+	if (!tags) return [];
 
 	return tags
 		.trim()
