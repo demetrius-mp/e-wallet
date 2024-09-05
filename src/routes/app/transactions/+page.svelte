@@ -53,7 +53,11 @@
 		transactions: data.transactions
 	});
 
-	$: bill = filteredTransactions.reduce((acc, transaction) => acc + transaction.value, 0);
+	$: bill = filteredTransactions.reduce((acc, transaction) => {
+		const value = transaction.type === 'EXPENSE' ? -transaction.value : transaction.value;
+
+		return acc + value;
+	}, 0);
 
 	function checkTagIsSelected(tag: string, filterTransactionOptions: FilterTransactionOptions) {
 		if (filterTransactionOptions.queryField === 'tags') {
@@ -71,7 +75,7 @@
 	}
 
 	async function copyTransactionsToClipboard() {
-		const initialReport = `Fatura ${filterTransactionOptions.date}\nValor total: ${formatCurrency(bill)}\n\n`;
+		const initialReport = `Transações em ${filterTransactionOptions.date}\nValor total: ${formatCurrency(bill)}\n\n`;
 
 		const report = filteredTransactions
 			.reduce((acc, transaction) => {
@@ -110,20 +114,20 @@
 
 <div>
 	<div class="flex items-baseline gap-2">
-		<h2 class="text-2xl">Fatura</h2>
+		<h2 class="text-2xl">Saldo</h2>
 		<small> ({filterTransactionOptions.date}) </small>
 	</div>
 
-	<Currency class="text-4xl font-extrabold" value={bill} />
+	<Currency class={classes('text-4xl font-extrabold', bill < 0 && 'text-error')} value={bill} />
 </div>
 
 <div class="divider my-1"></div>
 
 <div class="flex items-center justify-between gap-2">
 	<div>
-		<h2 class="text-2xl">À vencer</h2>
+		<h2 class="text-2xl">Transações</h2>
 		<span class="text-sm">
-			no mês {filterTransactionOptions.date}
+			do mês {filterTransactionOptions.date}
 		</span>
 	</div>
 
@@ -227,7 +231,7 @@
 						{transaction.name}
 					</span>
 
-					<span class="text-lg">
+					<span class="text-lg" class:text-success={transaction.type === 'INCOME'}>
 						<Currency value={transaction.value} />
 					</span>
 				</div>
