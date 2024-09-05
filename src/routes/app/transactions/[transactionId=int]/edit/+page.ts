@@ -12,7 +12,8 @@ export const load = (async (e) => {
 		tags: transaction.tags?.join(', ') || '',
 		endsAt: transaction.endsAt ? date.utc(transaction.endsAt).format('MM/YY') : 'Recorrente',
 		installments: transaction.installments,
-		groupId: transaction.groupId || undefined
+		groupId: transaction.groupId || undefined,
+		type: transaction.type
 	};
 
 	return {

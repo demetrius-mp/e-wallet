@@ -2,6 +2,7 @@
 	import ComboboxField from '$lib/components/FormFields/ComboboxField.svelte';
 	import DateField from '$lib/components/FormFields/DateField.svelte';
 	import InputField from '$lib/components/FormFields/InputField.svelte';
+	import NativeSelectField from '$lib/components/FormFields/NativeSelectField.svelte';
 	import NumberOfInstallmentsField from '$lib/components/FormFields/NumberOfInstallmentsField.svelte';
 	import SubmitButton from '$lib/components/FormFields/SubmitButton.svelte';
 	import TagsField from '$lib/components/FormFields/TagsField.svelte';
@@ -31,15 +32,32 @@
 		autocomplete="off"
 	/>
 
-	<InputField
-		label={($form.installments || 1) > 1 ? 'Valor da parcela' : 'Valor'}
-		name="value"
-		bind:value={$form.value}
-		{...$constraints.value}
-		errors={$errors?.value}
-		type="number"
-		autocomplete="off"
-	/>
+	<div class="grid grid-cols-2 gap-2">
+		<div class="col-span-1">
+			<InputField
+				label={($form.installments || 1) > 1 ? 'Valor da parcela' : 'Valor'}
+				name="value"
+				bind:value={$form.value}
+				{...$constraints.value}
+				errors={$errors?.value}
+				type="number"
+				autocomplete="off"
+			/>
+		</div>
+
+		<div class="col-span-1">
+			<NativeSelectField
+				label="Tipo"
+				name="type"
+				bind:value={$form.type}
+				{...$constraints.type}
+				errors={$errors?.type}
+			>
+				<option value="EXPENSE">Despesa</option>
+				<option value="INCOME">Receita</option>
+			</NativeSelectField>
+		</div>
+	</div>
 
 	<DateField
 		name="date"

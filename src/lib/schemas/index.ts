@@ -1,4 +1,5 @@
 import { date } from '$lib/utils/date';
+import { TransactionType } from '@prisma/client';
 import { z } from 'zod';
 
 export const signUpSchema = z
@@ -76,6 +77,7 @@ export const transactionSchema = z.object({
 	name: z.string().min(1),
 	value: z.coerce.number().min(0.01).step(0.01),
 	groupId: z.coerce.number().min(1).optional(),
+	type: z.nativeEnum(TransactionType).default('EXPENSE'),
 	saveAndContinue: z.string().nullish(),
 	date: z
 		.string()
@@ -153,8 +155,9 @@ export function transformTransactionFormData(data: z.output<typeof transactionSc
 		tags: transformTags(data.tags),
 		date: transformDate(data.date),
 		endsAt: transformEndsAt(data.endsAt),
-		installments: data.installments,
+		installments: data.installments || null,
 		saveAndContinue: Boolean(data.saveAndContinue),
-		groupId: data.groupId || null
+		groupId: data.groupId || null,
+		type: data.type
 	};
 }

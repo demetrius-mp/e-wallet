@@ -49,7 +49,8 @@ export const actions = {
 				tags: data.tags,
 				endsAt: data.endsAt,
 				installments: data.installments,
-				groupId: data.groupId
+				groupId: data.groupId,
+				type: data.type
 			}
 		});
 

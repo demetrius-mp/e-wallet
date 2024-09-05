@@ -41,15 +41,21 @@ model Group {
   @@map("groups")
 }
 
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
 model Transaction {
   id Int @id @default(autoincrement()) @map("id")
 
-  name         String    @map("name")
-  value        Float     @map("value")
-  date         DateTime  @map("date") @db.Date
-  endsAt       DateTime? @map("ends_at") @db.Date
-  installments Int?      @map("installments")
-  tags         String[]  @map("tags")
+  name         String          @map("name")
+  value        Float           @map("value")
+  date         DateTime        @map("date") @db.Date
+  endsAt       DateTime?       @map("ends_at") @db.Date
+  installments Int?            @map("installments")
+  tags         String[]        @map("tags")
+  type         TransactionType @default(EXPENSE) @map("type")
 
   userId Int  @map("user_id")
   user   User @relation(fields: [userId], references: [id])
