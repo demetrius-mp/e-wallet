@@ -69,6 +69,7 @@
 		<input type="hidden" {name} value={value || ''} />
 
 		<input
+			enterkeyhint="enter"
 			on:keypress={(e) => e.key === ',' && e.preventDefault()}
 			name="tags-input--{name}"
 			use:melt={$input}
