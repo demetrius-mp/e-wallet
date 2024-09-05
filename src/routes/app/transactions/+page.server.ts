@@ -24,9 +24,14 @@ export const load = (async (e) => {
 				}
 			]
 		},
-		orderBy: {
-			date: 'desc'
-		},
+		orderBy: [
+			{
+				date: 'desc'
+			},
+			{
+				value: 'desc'
+			}
+		],
 		include: {
 			group: {
 				select: {
