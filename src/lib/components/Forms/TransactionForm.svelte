@@ -110,6 +110,10 @@
 				<IconCheck />
 			{/if}
 		</div>
+
+		<div class="flex w-full select-none justify-center gap-2 p-2" slot="no-items-found">
+			Nenhum resultado encontrado
+		</div>
 	</ComboboxField>
 
 	<div class="flex justify-end gap-2" class:justify-between={deleteAction}>

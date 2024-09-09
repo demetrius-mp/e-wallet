@@ -164,6 +164,10 @@
 			>
 				<slot name="item" item={opt} {isSelected} />
 			</li>
+		{:else}
+			<li class="combobox-option">
+				<slot name="no-items-found" />
+			</li>
 		{/each}
 	</ul>
 {/if}
