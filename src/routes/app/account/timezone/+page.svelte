@@ -2,6 +2,8 @@
 	import SelectField from '$lib/components/FormFields/SelectField.svelte';
 	import SubmitButton from '$lib/components/FormFields/SubmitButton.svelte';
 	import { date } from '$lib/utils/date.js';
+	import type { Dayjs } from 'dayjs';
+	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
 	import { superForm } from 'sveltekit-superforms';
 	import IconCheck from '~icons/mdi/Check';
@@ -12,8 +14,22 @@
 	const { form, errors, submitting, enhance } = superForm(data.form);
 
 	function getDateWithTimezone(tz: string) {
-		return date.tz(new Date(), tz).format('DD/MM/YYYY HH:mm:ss');
+		return date.tz(new Date(), tz);
 	}
+
+	function formatDate(date: Dayjs) {
+		return date.format('DD/MM/YYYY HH:mm:ss');
+	}
+
+	$: currentTime = getDateWithTimezone($form.timezone);
+
+	onMount(() => {
+		const intervalId = setInterval(() => {
+			currentTime = currentTime.add(1, 'second');
+		}, 1000);
+
+		return () => clearInterval(intervalId);
+	});
 </script>
 
 <svelte:head>
@@ -26,7 +42,7 @@
 
 <form class="flex flex-col gap-4" use:enhance method="post">
 	<SelectField
-		label="Fuso horário ({getDateWithTimezone($form.timezone)})"
+		label="Fuso horário ({formatDate(currentTime)})"
 		name="timezone"
 		items={Intl.supportedValuesOf('timeZone')}
 		toValue={(item) => item}
@@ -68,7 +84,7 @@
 						</span>
 
 						<span>
-							{getDateWithTimezone(item)}
+							{formatDate(getDateWithTimezone(item))}
 						</span>
 					</div>
 				{/each}
