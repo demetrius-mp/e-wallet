@@ -7,5 +7,5 @@ export async function fetchGroups(query: string): Promise<FetchedGroup[]> {
 	const response = await fetch(`/app/api/groups?search=${query}`);
 	const json = await response.json();
 
-	return json.items;
+	return json.groups;
 }
