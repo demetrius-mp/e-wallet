@@ -56,7 +56,7 @@
 	}
 
 	const {
-		elements: { menu, input, option, hiddenInput, label: meltLabel },
+		elements: { menu, input, option, label: meltLabel },
 		states: { open, inputValue, touchedInput, selected: meltSelected, highlightedItem }
 	} = createCombobox<TItem>({
 		forceVisible: true,
@@ -77,6 +77,12 @@
 
 	$: if (!$open) {
 		$inputValue = $meltSelected?.label ?? '';
+	}
+
+	$: {
+		if (!value) {
+			$meltSelected = undefined;
+		}
 	}
 
 	const debouncedFilterOptions = debounce(filterOptions, 500);

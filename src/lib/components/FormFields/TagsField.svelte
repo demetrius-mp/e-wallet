@@ -31,10 +31,19 @@
 		states: { tags }
 	} = createTagsInput({
 		...props,
-		defaultTags: split(value)
+		defaultTags: split(value),
+		onTagsChange: ({ next }) => {
+			value = joinBy(next, (t) => t.value, ',');
+
+			return next;
+		}
 	});
 
-	$: value = joinBy($tags, (t) => t.value, ',');
+	$: {
+		if (!value) {
+			$tags = [];
+		}
+	}
 </script>
 
 <div>
