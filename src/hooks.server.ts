@@ -23,6 +23,8 @@ const handleTheme = async function ({ event, resolve }) {
 	const cookieTheme = event.cookies.get('theme');
 	const theme = checkIsTheme(cookieTheme) ? cookieTheme : 'light';
 
+	event.locals.theme = theme;
+
 	return await resolve(event, {
 		transformPageChunk({ html }) {
 			return html.replace('%app.data-theme%', theme);

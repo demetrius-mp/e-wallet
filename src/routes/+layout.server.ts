@@ -3,6 +3,7 @@ import type { LayoutServerLoad } from './$types';
 
 export const load = loadFlash(async function (e) {
 	return {
-		currentUser: e.locals.currentUser
+		currentUser: e.locals.currentUser,
+		theme: e.locals.theme
 	};
 }) satisfies LayoutServerLoad;

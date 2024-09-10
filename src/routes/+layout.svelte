@@ -48,7 +48,7 @@
 		</a>
 	</div>
 	<div class="navbar-end gap-2">
-		<ThemeSwitch />
+		<ThemeSwitch theme={data.theme} />
 		{#if data.currentUser}
 			<Dropdown
 				let:item
