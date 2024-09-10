@@ -1,5 +1,71 @@
+<script lang="ts" context="module">
+	function crateParamsStore() {
+		const groupIdParam = queryParam<number | undefined>('groupId', {
+			defaultValue: undefined,
+			encode(value) {
+				return value?.toString();
+			},
+			decode(value) {
+				if (value === null) {
+					return undefined;
+				}
+
+				return parseInt(value);
+			}
+		});
+
+		const queryFieldParam = queryParam<'tags' | 'name'>('queryField', {
+			defaultValue: 'name',
+			encode(value) {
+				return value || 'name';
+			},
+			decode(value) {
+				if (value !== 'name' && value !== 'tags') {
+					return 'name';
+				}
+
+				return value;
+			}
+		});
+
+		const query_Param = queryParam('query', {
+			defaultValue: '',
+			encode(value) {
+				return ssp.string().encode(value);
+			},
+			decode(value) {
+				return ssp.string().decode(value) || '';
+			}
+		});
+
+		const dateParam = queryParam<string>('date', {
+			defaultValue: date().utc(true).add(1, 'month').format('MM/YYYY'),
+			encode(value) {
+				return ssp.string().encode(value);
+			},
+			decode(value) {
+				if (value === null) {
+					return date().utc(true).add(1, 'month').format('MM/YYYY');
+				}
+
+				if (date(value, 'MM/YYYY', true).isValid()) {
+					return value;
+				}
+
+				return date().utc(true).add(1, 'month').format('MM/YYYY');
+			}
+		});
+
+		return {
+			groupIdParam,
+			queryFieldParam,
+			query_Param,
+			dateParam
+		};
+	}
+</script>
+
 <script lang="ts">
-	import { page } from '$app/stores';
 	import Currency from '$lib/components/Currency.svelte';
 	import FloatingButton from '$lib/components/FloatingButton.svelte';
 	import MonthCalendar from '$lib/components/MonthCalendar.svelte';
@@ -11,6 +77,7 @@
 	import { date, getDatesDiffInMonths } from '$lib/utils/date.js';
 	import { formatCurrency } from '$lib/utils/formatCurrency.js';
 	import { fade } from 'svelte/transition';
+	import { queryParam, ssp } from 'sveltekit-search-params';
 	import IconCalendarMonth from '~icons/mdi/CalendarMonth';
 	import IconClose from '~icons/mdi/Close';
 	import IconContentCopy from '~icons/mdi/ContentCopy';
@@ -26,13 +93,13 @@
 		groupId?: number;
 	};
 
-	const groupIdParam = $page.url.searchParams.get('groupId');
+	const { groupIdParam, queryFieldParam, query_Param, dateParam } = crateParamsStore();
 
 	let filterTransactionOptions: FilterTransactionOptions = {
-		date: date().utc(true).add(1, 'month').format('MM/YYYY'),
-		query: '',
-		queryField: 'name',
-		groupId: groupIdParam ? parseInt(groupIdParam) : undefined
+		date: $dateParam,
+		query: $query_Param,
+		queryField: $queryFieldParam,
+		groupId: $groupIdParam ? $groupIdParam : undefined
 	};
 
 	let highlightedDate = filterTransactionOptions.date;
@@ -44,6 +111,11 @@
 			transactions: data.transactions,
 			...filterTransactionOptions
 		});
+
+		$groupIdParam = filterTransactionOptions.groupId;
+		$queryFieldParam = filterTransactionOptions.queryField;
+		$query_Param = filterTransactionOptions.query;
+		$dateParam = filterTransactionOptions.date;
 
 		return filterTransactionOptions;
 	}
