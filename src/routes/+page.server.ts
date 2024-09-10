@@ -7,6 +7,4 @@ export const load = (async (e) => {
 	if (currentUser) {
 		redirect(302, '/app');
 	}
-
-	return {};
 }) satisfies PageServerLoad;
