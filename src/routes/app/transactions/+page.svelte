@@ -190,7 +190,10 @@
 		<small> ({filterTransactionOptions.date}) </small>
 	</div>
 
-	<Currency class={classes('text-4xl font-extrabold', bill < 0 && 'text-error')} value={bill} />
+	<Currency
+		class={classes('text-4xl font-extrabold', bill < 0 && 'text-error', bill > 0 && 'text-success')}
+		value={bill}
+	/>
 </div>
 
 <div class="divider my-1"></div>
@@ -299,9 +302,9 @@
 		<li>
 			<a href="/app/transactions/{transaction.id}/edit">
 				<div class="flex justify-between gap-2">
-					<span class="text-lg font-bold">
+					<h3 class="text-lg font-bold">
 						{transaction.name}
-					</span>
+					</h3>
 
 					<span class="text-lg" class:text-success={transaction.type === 'INCOME'}>
 						<Currency value={transaction.value} />
@@ -330,76 +333,69 @@
 						{/if}
 					</span>
 				</div>
-
-				<div class="mt-2 flex flex-wrap gap-2">
-					{#if transaction.group}
-						{@const isSelected = checkGroupIsSelected(
-							transaction.group.id,
-							filterTransactionOptions
-						)}
-						<button
-							aria-label="Filtrar por grupo"
-							on:click={(e) => {
-								e.preventDefault();
-
-								if (transaction.group === null) {
-									return;
-								}
-
-								if (isSelected) {
-									setFilteredTransactions({
-										groupId: undefined
-									});
-
-									return;
-								}
-
-								setFilteredTransactions({
-									groupId: transaction.group.id
-								});
-							}}
-							class="badge badge-accent z-50"
-							class:badge-outline={!isSelected}
-						>
-							{transaction.group.name}
-						</button>
-					{/if}
-					{#each transaction.tags as tag}
-						{@const isSelected = checkTagIsSelected(tag, filterTransactionOptions)}
-						<button
-							aria-label="Filtrar por tag"
-							on:click={(e) => {
-								e.preventDefault();
-
-								if (isSelected) {
-									setFilteredTransactions({
-										query: '',
-										queryField: 'name'
-									});
-
-									return;
-								}
-
-								setFilteredTransactions({
-									query: tag,
-									queryField: 'tags'
-								});
-							}}
-							class={classes(
-								'badge z-50',
-								isSelected && 'badge-primary',
-								!isSelected && 'badge-outline'
-							)}
-						>
-							{tag}
-						</button>
-					{/each}
-				</div>
-
-				{#if i !== filteredTransactions.length - 1}
-					<div class="divider my-1"></div>
-				{/if}
 			</a>
+
+			<div class="mt-2 flex flex-wrap gap-2">
+				{#if transaction.group}
+					{@const isSelected = checkGroupIsSelected(transaction.group.id, filterTransactionOptions)}
+					<button
+						aria-label="Filtrar por grupo"
+						on:click={(e) => {
+							e.preventDefault();
+
+							if (transaction.group === null) {
+								return;
+							}
+
+							if (isSelected) {
+								setFilteredTransactions({
+									groupId: undefined
+								});
+
+								return;
+							}
+
+							setFilteredTransactions({
+								groupId: transaction.group.id
+							});
+						}}
+						class="badge badge-accent"
+						class:badge-outline={!isSelected}
+					>
+						{transaction.group.name}
+					</button>
+				{/if}
+				{#each transaction.tags as tag}
+					{@const isSelected = checkTagIsSelected(tag, filterTransactionOptions)}
+					<button
+						aria-label="Filtrar por tag"
+						on:click={(e) => {
+							e.preventDefault();
+
+							if (isSelected) {
+								setFilteredTransactions({
+									query: '',
+									queryField: 'name'
+								});
+
+								return;
+							}
+
+							setFilteredTransactions({
+								query: tag,
+								queryField: 'tags'
+							});
+						}}
+						class={classes('badge badge-primary', !isSelected && 'badge-outline')}
+					>
+						{tag}
+					</button>
+				{/each}
+			</div>
+
+			{#if i !== filteredTransactions.length - 1}
+				<div class="divider my-1"></div>
+			{/if}
 		</li>
 	{/each}
 </ul>
