@@ -14,7 +14,7 @@
 			}
 		});
 
-		const queryFieldParam = queryParam<'tags' | 'name'>('queryField', {
+		const fieldParam = queryParam<'tags' | 'name'>('field', {
 			defaultValue: 'name',
 			encode(value) {
 				return value || 'name';
@@ -28,7 +28,7 @@
 			}
 		});
 
-		const query_Param = queryParam('query', {
+		const termParam = queryParam('term', {
 			defaultValue: '',
 			encode(value) {
 				return ssp.string().encode(value);
@@ -58,8 +58,8 @@
 
 		return {
 			groupIdParam,
-			queryFieldParam,
-			query_Param,
+			fieldParam,
+			termParam,
 			dateParam
 		};
 	}
@@ -93,12 +93,12 @@
 		groupId?: number;
 	};
 
-	const { groupIdParam, queryFieldParam, query_Param, dateParam } = crateParamsStore();
+	const { groupIdParam, fieldParam, termParam, dateParam } = crateParamsStore();
 
 	let filterTransactionOptions: FilterTransactionOptions = {
 		date: $dateParam,
-		query: $query_Param,
-		queryField: $queryFieldParam,
+		query: $termParam,
+		queryField: $fieldParam,
 		groupId: $groupIdParam ? $groupIdParam : undefined
 	};
 
@@ -113,8 +113,8 @@
 		});
 
 		$groupIdParam = filterTransactionOptions.groupId;
-		$queryFieldParam = filterTransactionOptions.queryField;
-		$query_Param = filterTransactionOptions.query;
+		$fieldParam = filterTransactionOptions.queryField;
+		$termParam = filterTransactionOptions.query;
 		$dateParam = filterTransactionOptions.date;
 
 		return filterTransactionOptions;
