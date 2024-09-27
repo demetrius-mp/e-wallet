@@ -159,7 +159,11 @@
 						date(filterTransactionOptions.date, 'MM/YYYY').utc(true).toDate()
 					);
 
-					line += `Parcela ${paidInstallments}/${transaction.installments}\n`;
+					if (transaction.installments === 1) {
+						line += 'À vista\n';
+					} else {
+						line += `Parcela ${paidInstallments}/${transaction.installments}\n`;
+					}
 				} else {
 					line += 'Recorrente\n';
 				}
