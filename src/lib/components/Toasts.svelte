@@ -59,7 +59,7 @@
 			animate:flip={{ duration: 500 }}
 			in:fly={{ duration: 150, x: '100%' }}
 			out:fly={{ duration: 150, x: '100%' }}
-			class="max-w-xs rounded-md border border-gray-700 bg-base-200"
+			class="max-w-xs rounded-md border border-base-300 bg-base-200"
 		>
 			<div class="flex items-center justify-between pe-1 ps-2 pt-1">
 				<div class="flex gap-2">
@@ -73,7 +73,7 @@
 				</div>
 
 				<button use:melt={$close(id)} class="btn btn-circle btn-ghost btn-sm">
-					<svelte:component this={IconCloseCircleOutline} class="h-6 w-6" />
+					<IconCloseCircleOutline class="h-6 w-6" />
 				</button>
 			</div>
 			<div class="divider m-0"></div>
