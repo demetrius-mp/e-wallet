@@ -226,7 +226,7 @@
 			props={{
 				forceVisible: true,
 				positioning: {
-					placement: 'bottom-start'
+					placement: 'bottom-end'
 				}
 			}}
 		>
