@@ -108,7 +108,7 @@
 					aria-label={`Selectionar mês ${monthName}`}
 					disabled={isDisabled}
 					class={classes(
-						'btn uppercase hover:btn-primary',
+						'btn animate-none uppercase hover:btn-primary',
 						isSelected && 'btn-primary',
 						isHighlighted && !isSelected && 'btn-outline btn-primary'
 					)}
