@@ -1,6 +1,10 @@
 import { redirect, type RequestEvent } from '@sveltejs/kit';
 
-export function redirectTo(data: RequestEvent, fallbackStatus?: number, fallbackLocation?: string) {
+export function redirectTo(
+	data: RequestEvent,
+	fallbackStatus?: number,
+	fallbackLocation?: string
+): never {
 	const redirectTo = data.url.searchParams.get('redirectTo');
 
 	if (redirectTo) {
@@ -10,4 +14,6 @@ export function redirectTo(data: RequestEvent, fallbackStatus?: number, fallback
 	if (fallbackStatus && fallbackLocation) {
 		redirect(fallbackStatus, fallbackLocation);
 	}
+
+	throw new Error('No redirect found or fallback status or location provided');
 }

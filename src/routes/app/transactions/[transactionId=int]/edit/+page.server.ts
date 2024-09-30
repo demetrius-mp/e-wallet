@@ -91,6 +91,12 @@ export const actions = {
 			}
 		});
 
-		redirectTo(e, 302, '/app/transactions');
+		const searchParams = new URLSearchParams();
+
+		if (data.groupId) {
+			searchParams.set('groupId', data.groupId.toString());
+		}
+
+		redirectTo(e, 302, '/app/transactions?' + searchParams.toString());
 	}
 } satisfies Actions;
