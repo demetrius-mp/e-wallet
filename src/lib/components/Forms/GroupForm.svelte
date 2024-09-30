@@ -13,6 +13,7 @@
 
 <form use:enhance method="post" class="flex flex-col gap-4">
 	<InputField
+		autofocus
 		label="Nome"
 		name="name"
 		bind:value={$form.name}
