@@ -26,6 +26,11 @@
 	}
 
 	function onMinusClick() {
+		if ((installments || 0) <= 1) {
+			alert('O número de parcelas não pode ser menor que 0.');
+			return;
+		}
+
 		installments = (installments || 0) - 1;
 		endsAt = date.utc(initialDate, 'DD/MM/YY').add(installments, 'months').format('MM/YY');
 	}
@@ -85,7 +90,14 @@
 		<button on:click={onRecurrentClick} type="button" class="btn join-item">
 			<IconCashSync />
 		</button>
-		<button on:click={onMinusClick} type="button" class="btn join-item"> - </button>
+		<button
+			on:click={onMinusClick}
+			disabled={(installments || 0) <= 1}
+			type="button"
+			class="btn join-item"
+		>
+			-
+		</button>
 		<button on:click={onPlusClick} type="button" class="btn join-item"> + </button>
 	</div>
 

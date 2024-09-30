@@ -48,7 +48,9 @@
 			{#if required}
 				<span class="text-error"> * </span>
 			{/if}
-			<small class="text-xs"> (dd/mm/aa) </small>
+			<small class="text-xs">
+				({date.utc(value, 'DD/MM/YY', true).format('DD/MM/YY, dddd')})
+			</small>
 		</span>
 	</div>
 	<div class="join">

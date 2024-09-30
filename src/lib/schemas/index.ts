@@ -93,20 +93,15 @@ export const transactionSchema = z.object({
 	tags: z
 		.string()
 		.optional()
-		.refine(
-			(value) => {
-				if (value === undefined) return true;
+		.refine((value) => {
+			if (value === undefined) return true;
 
-				const numberOfTags = (value.match(/,/g) || []).length + 1;
-				if (numberOfTags > 5) return false;
+			const numberOfTags = (value.match(/,/g) || []).length + 1;
+			if (numberOfTags > 5) return false;
 
-				return true;
-			},
-			{
-				message: 'Máximo de 5 tags'
-			}
-		),
-	installments: z.coerce.number().nullish(),
+			return true;
+		}, 'Máximo de 5 tags'),
+	installments: z.coerce.number().int().min(1).nullish(),
 	endsAt: z.string().refine(
 		(value) => {
 			return value === 'Recorrente' || date(value, 'MM/YY', true).isValid();
