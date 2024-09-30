@@ -101,13 +101,21 @@
 					);
 
 					if (transaction.installments === 1) {
-						line += 'À vista\n';
+						line += 'À vista';
 					} else {
-						line += `Parcela ${paidInstallments}/${transaction.installments}\n`;
+						line += `Parcela ${paidInstallments}/${transaction.installments}`;
 					}
 				} else {
-					line += 'Recorrente\n';
+					line += 'Recorrente';
 				}
+
+				if (transaction.type === 'EXPENSE') {
+					line += ' (Despesa)';
+				} else if (transaction.type === 'INCOME') {
+					line += ' (Receita)';
+				}
+
+				line += '\n';
 
 				return acc + line + '\n';
 			}, initialReport)
