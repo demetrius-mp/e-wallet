@@ -12,7 +12,8 @@ export const GET: RequestHandler = async (e) => {
 		where: {
 			userId: currentUser.id,
 			name: {
-				startsWith: search
+				startsWith: search,
+				mode: 'insensitive'
 			}
 		},
 		omit: {
