@@ -1,71 +1,8 @@
-<script lang="ts" context="module">
-	function crateParamsStore() {
-		const groupIdParam = queryParam<number | undefined>('groupId', {
-			defaultValue: undefined,
-			encode(value) {
-				return value?.toString();
-			},
-			decode(value) {
-				if (value === null) {
-					return undefined;
-				}
-
-				return parseInt(value);
-			}
-		});
-
-		const fieldParam = queryParam<'tags' | 'name'>('field', {
-			defaultValue: 'name',
-			encode(value) {
-				return value || 'name';
-			},
-			decode(value) {
-				if (value !== 'name' && value !== 'tags') {
-					return 'name';
-				}
-
-				return value;
-			}
-		});
-
-		const termParam = queryParam('term', {
-			defaultValue: '',
-			encode(value) {
-				return ssp.string().encode(value);
-			},
-			decode(value) {
-				return ssp.string().decode(value) || '';
-			}
-		});
-
-		const dateParam = queryParam<string>('date', {
-			defaultValue: date().utc(true).add(1, 'month').format('MM/YYYY'),
-			encode(value) {
-				return ssp.string().encode(value);
-			},
-			decode(value) {
-				if (value === null) {
-					return date().utc(true).add(1, 'month').format('MM/YYYY');
-				}
-
-				if (date(value, 'MM/YYYY', true).isValid()) {
-					return value;
-				}
-
-				return date().utc(true).add(1, 'month').format('MM/YYYY');
-			}
-		});
-
-		return {
-			groupIdParam,
-			fieldParam,
-			termParam,
-			dateParam
-		};
-	}
-</script>
-
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
+	import { page } from '$app/stores';
+
 	import Currency from '$lib/components/Currency.svelte';
 	import FloatingButton from '$lib/components/FloatingButton.svelte';
 	import MonthCalendar from '$lib/components/MonthCalendar.svelte';
@@ -77,7 +14,6 @@
 	import { date, getDatesDiffInMonths } from '$lib/utils/date.js';
 	import { formatCurrency } from '$lib/utils/formatCurrency.js';
 	import { fade } from 'svelte/transition';
-	import { queryParam, ssp } from 'sveltekit-search-params';
 	import IconCalendarMonth from '~icons/mdi/CalendarMonth';
 	import IconClose from '~icons/mdi/Close';
 	import IconContentCopy from '~icons/mdi/ContentCopy';
@@ -93,18 +29,16 @@
 		groupId?: number;
 	};
 
-	const { groupIdParam, fieldParam, termParam, dateParam } = crateParamsStore();
-
 	let filterTransactionOptions: FilterTransactionOptions = {
-		date: $dateParam,
-		query: $termParam,
-		queryField: $fieldParam,
-		groupId: $groupIdParam ? $groupIdParam : undefined
+		date: data.searchParams.date,
+		query: data.searchParams.term,
+		queryField: data.searchParams.field,
+		groupId: data.searchParams.groupId
 	};
 
 	let highlightedDate = filterTransactionOptions.date;
 
-	function setFilteredTransactions(options?: Partial<FilterTransactionOptions>) {
+	async function setFilteredTransactions(options?: Partial<FilterTransactionOptions>) {
 		filterTransactionOptions = Object.assign(filterTransactionOptions, options);
 
 		filteredTransactions = filterTransactions({
@@ -112,10 +46,17 @@
 			...filterTransactionOptions
 		});
 
-		$groupIdParam = filterTransactionOptions.groupId;
-		$fieldParam = filterTransactionOptions.queryField;
-		$termParam = filterTransactionOptions.query;
-		$dateParam = filterTransactionOptions.date;
+		const newSearchParams = $page.url.searchParams;
+
+		if (filterTransactionOptions.groupId) {
+			newSearchParams.set('groupId', filterTransactionOptions.groupId.toString());
+		}
+
+		newSearchParams.set('field', filterTransactionOptions.queryField);
+		newSearchParams.set('term', filterTransactionOptions.query);
+		newSearchParams.set('date', filterTransactionOptions.date);
+
+		await goto(`?${newSearchParams.toString()}`);
 
 		return filterTransactionOptions;
 	}
@@ -260,8 +201,8 @@
 							max={data.maxDate}
 							{highlightedDate}
 							selectedDate={filterTransactionOptions.date}
-							onChange={(date) => {
-								setFilteredTransactions({
+							onChange={async (date) => {
+								await setFilteredTransactions({
 									date
 								});
 							}}
@@ -275,9 +216,9 @@
 
 <div class="mt-4">
 	<form
-		on:submit={(e) => {
+		on:submit={async (e) => {
 			e.preventDefault();
-			setFilteredTransactions();
+			await setFilteredTransactions();
 		}}
 		class="join w-full"
 	>
@@ -344,7 +285,7 @@
 					{@const isSelected = checkGroupIsSelected(transaction.group.id, filterTransactionOptions)}
 					<button
 						aria-label="Filtrar por grupo"
-						on:click={(e) => {
+						on:click={async (e) => {
 							e.preventDefault();
 
 							if (transaction.group === null) {
@@ -352,14 +293,14 @@
 							}
 
 							if (isSelected) {
-								setFilteredTransactions({
+								await setFilteredTransactions({
 									groupId: undefined
 								});
 
 								return;
 							}
 
-							setFilteredTransactions({
+							await setFilteredTransactions({
 								groupId: transaction.group.id
 							});
 						}}
@@ -373,11 +314,11 @@
 					{@const isSelected = checkTagIsSelected(tag, filterTransactionOptions)}
 					<button
 						aria-label="Filtrar por tag"
-						on:click={(e) => {
+						on:click={async (e) => {
 							e.preventDefault();
 
 							if (isSelected) {
-								setFilteredTransactions({
+								await setFilteredTransactions({
 									query: '',
 									queryField: 'name'
 								});
@@ -385,7 +326,7 @@
 								return;
 							}
 
-							setFilteredTransactions({
+							await setFilteredTransactions({
 								query: tag,
 								queryField: 'tags'
 							});

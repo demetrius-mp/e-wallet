@@ -1,4 +1,5 @@
 import { date } from '$lib/utils/date';
+import { z } from 'zod';
 import type { PageLoad } from './$types';
 
 export const load = (async (e) => {
@@ -21,9 +22,30 @@ export const load = (async (e) => {
 
 	maxDate = maxDate.add(1, 'month');
 
+	const getDefaultDate = () => date().utc(true).add(1, 'month').format('MM/YYYY');
+
+	const searchParamsSchema = z.object({
+		groupId: z.coerce.number().optional().catch(undefined),
+		term: z.string().catch(''),
+		field: z.enum(['tags', 'name']).catch('name'),
+		date: z
+			.string()
+			.transform((value) => {
+				if (date(value, 'MM/YYYY', true).isValid()) {
+					return value;
+				}
+
+				return getDefaultDate();
+			})
+			.catch(getDefaultDate())
+	});
+
+	const searchParams = searchParamsSchema.parse(Object.fromEntries(e.url.searchParams));
+
 	return {
 		...e.data,
 		minDate: minDate.format('MM/YYYY'),
-		maxDate: maxDate.format('MM/YYYY')
+		maxDate: maxDate.format('MM/YYYY'),
+		searchParams
 	};
 }) satisfies PageLoad;
