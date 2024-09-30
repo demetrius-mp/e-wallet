@@ -20,13 +20,21 @@
 	function handleMinusClick() {
 		const valueAsDate = date.utc(value, 'DD/MM/YY', true);
 
-		value = valueAsDate.subtract(1, 'day').format('DD/MM/YY');
+		if (valueAsDate.isValid()) {
+			value = valueAsDate.subtract(1, 'day').format('DD/MM/YY');
+		} else {
+			value = date.utc().subtract(1, 'day').format('DD/MM/YY');
+		}
 	}
 
 	function handlePlusClick() {
 		const valueAsDate = date.utc(value, 'DD/MM/YY', true);
 
-		value = valueAsDate.add(1, 'day').format('DD/MM/YY');
+		if (valueAsDate.isValid()) {
+			value = valueAsDate.add(1, 'day').format('DD/MM/YY');
+		} else {
+			value = date.utc().add(1, 'day').format('DD/MM/YY');
+		}
 	}
 
 	$: error = errors?.at(0);
